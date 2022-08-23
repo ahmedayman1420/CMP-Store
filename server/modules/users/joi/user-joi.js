@@ -12,7 +12,7 @@ const userJoi = {
       .object()
       .required()
       .keys({
-        name: joi.string().alphanum().min(3).max(30).required(),
+        name: joi.string().required(),
         email: joi
           .string()
           .email({
@@ -21,7 +21,7 @@ const userJoi = {
           })
           .required(),
         password: joi.string().required(),
-        age: joi.number().integer().min(20).max(60),
+        confirmPassword: joi.string().required(),
       }),
   },
   signinSchema: {

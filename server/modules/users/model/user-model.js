@@ -15,14 +15,13 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+
     password: { type: String, required: true },
-    age: {
-      type: Number,
-      required: true,
-      min: [20, "Min age error"],
-      max: [60, "Max age error"],
-    },
+
+    cart: { type: Array, default: [] },
+
     role: { type: String, default: "user" },
+
     isDeleted: { type: Boolean, default: false },
   },
 

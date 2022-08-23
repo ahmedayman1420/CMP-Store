@@ -35,11 +35,11 @@ router.post(
 );
 
 // update api
-router.post(
-  "/user-update-password",
-  validateRequest(userSchemas.updatePasswordSchema),
-  isAuthorized(userEndpoints.updateUserPassword),
-  userFunctions.updatePassword
-);
+// router.post(
+//   "/user-update-password",
+//   validateRequest(userSchemas.updatePasswordSchema),
+//   isAuthorized(userEndpoints.updateUserPassword),
+//   userFunctions.updatePassword
+// );
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = router;

@@ -16,11 +16,18 @@ const isAuthorized = (endPoint) => {
         const token = req.headers.authorization.split(" ")[1];
 
         if (token) {
-          const decoded = jwt.verify(token, process.env.ENCRYPT_KEY);
-          const isAllowed = await userRbac.can(
-            decoded.role.toString(),
-            endPoint
-          );
+          if (token.length < 500) {
+            // Memories Token
+            var decoded = jwt.verify(token, process.env.ENCRYPT_KEY).data;
+            var isAllowed = await userRbac.can(
+              decoded.role.toString(),
+              endPoint
+            );
+          } else {
+            // Google Token Token
+            var decoded = jwt.decode(token);
+            var isAllowed = await userRbac.can("user", endPoint);
+          }
 
           if (isAllowed) {
             req.decoded = decoded;
@@ -42,8 +49,9 @@ const isAuthorized = (endPoint) => {
       }
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        Message: "Error In Is Autorized Function",
+        Message: error,
       });
+      console.log(error);
     }
   };
 };

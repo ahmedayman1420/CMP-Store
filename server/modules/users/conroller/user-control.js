@@ -12,29 +12,39 @@ the response of this function in success (Sign up Successfully), in failure (sho
 */
 const signUp = async (req, res) => {
   try {
-    let { name, email, password, age } = req.body;
+    let { name, email, password, confirmPassword } = req.body;
 
     const oldUser = await users.findOne({ email, isDeleted: false });
     if (!oldUser) {
-      const newUser = new users({ name, email, password, age });
-      const data = await newUser.save();
+      if (password === confirmPassword) {
+        const newUser = new users({ name, email, password });
+        const data = await newUser.save();
 
-      var token = jwt.sign(
-        { email: data.email, role: data.role },
-        process.env.ENCRYPT_KEY
-      );
+        var token = jwt.sign(
+          {
+            data: { name: data.name, email: data.email, role: data.role },
+            exp: Math.floor(Date.now() / 1000) + 60 * 60,
+          },
+          process.env.ENCRYPT_KEY
+        );
 
-      res
-        .status(StatusCodes.CREATED)
-        .json({ Message: "Sign up Successfully", data: { token } });
+        res.status(StatusCodes.CREATED).json({
+          Message: "Sign up Successfully",
+          payload: { token, user: newUser },
+        });
+      } else {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ Message: "Password not matched confirm passwords" });
+      }
     } else {
       res
         .status(StatusCodes.BAD_REQUEST)
         .json({ Message: "Email is Already Found" });
     }
   } catch (error) {
-    console.log({ error });
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
   }
 };
 
@@ -47,18 +57,27 @@ const signIn = async (req, res) => {
     let { email, password } = req.body;
     const oldUser = await users.findOne({ email, isDeleted: false });
     if (oldUser) {
+      let cdate = Date.now();
       let match = bcrypt.compare(
         password,
         oldUser.password,
         function (err, result) {
           if (result) {
             var token = jwt.sign(
-              { email: oldUser.email, role: oldUser.role },
+              {
+                data: {
+                  name: oldUser.name,
+                  email: oldUser.email,
+                  role: oldUser.role,
+                },
+                exp: Math.floor(cdate / 1000) + 60 * 60,
+              },
               process.env.ENCRYPT_KEY
             );
-            res
-              .status(StatusCodes.OK)
-              .json({ Message: "Sign in Successfully", Data: { token } });
+            res.status(StatusCodes.OK).json({
+              Message: "Sign in Successfully",
+              payload: { token, user: oldUser },
+            });
           } else {
             res
               .status(StatusCodes.BAD_REQUEST)
@@ -70,54 +89,15 @@ const signIn = async (req, res) => {
       res.status(StatusCodes.BAD_REQUEST).json({ Message: "User Not Found !" });
     }
   } catch (error) {
-    console.log({ error });
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
   }
 };
 
-/*
-//==// Update password: is the logic of '/user-update-password' api that used to update user password.
-the response of this function in success (User updated Successfully), in failure (show error message).
-*/
-const updatePassword = async (req, res) => {
-  try {
-    let { oldPassword, newPassword } = req.body;
-    let { email, role } = req.decoded;
-    const oldUser = await users.findOne({ email, isDeleted: false });
-    if (oldUser) {
-      let match = bcrypt.compare(
-        oldPassword,
-        oldUser.password,
-        async function (err, result) {
-          if (result) {
-            let password = await bcrypt.hash(newPassword, 7);
-            const data = await users.updateOne(
-              { email, isDeleted: false },
-              { password }
-            );
 
-            res
-              .status(StatusCodes.OK)
-              .json({ Message: "Password updated Successfully" });
-          } else {
-            res
-              .status(StatusCodes.BAD_REQUEST)
-              .json({ Message: "Incorrect Password !" });
-          }
-        }
-      );
-    } else {
-      res.status(StatusCodes.BAD_REQUEST).json({ Message: "User Not Found !" });
-    }
-  } catch (error) {
-    console.log({ error });
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
-  }
-};
 
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = {
   signUp,
   signIn,
-  updatePassword,
 };
