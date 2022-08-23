@@ -1,0 +1,51 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\CMP\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add cookie-parser body-parser cors
+
+PATH: 
+  C:\Program Files (x86)\VMware\VMware Player\bin\;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\CMake\bin;C:\MinGW\bin;;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\CMP\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\CMP\AppData\Local\Programs\Python\Python310\;C:\Users\CMP\AppData\Local\Microsoft\WindowsApps;C:\Users\CMP\AppData\Local\GitHubDesktop\bin;C:\intelFPGA\20.1\modelsim_ase\win32aloem;C:\Users\CMP\AppData\Roaming\npm;C:\Users\CMP\AppData\Local\Programs\Microsoft VS Code\bin;C:\MinGW\bin;C:\Program Files\heroku\bin;
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.13.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'C:\Users\CMP\OneDrive\Documents\GitHub\Tumblr\CMP-Store\server\node_modules\bcrypt\lib\binding\napi-v3\bcrypt_lib.node'
+
+npm manifest: 
+  {
+    "name": "1--express-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "start": "nodemon index.js"
+    },
+    "keywords": [],
+    "author": "Ahmed Ayman Ahmed Ibrahim",
+    "license": "ISC",
+    "dependencies": {
+      "bcrypt": "^5.0.1",
+      "dotenv": "^16.0.0",
+      "easy-rbac": "^3.2.0",
+      "express": "^4.17.3",
+      "http-status-codes": "^2.2.0",
+      "joi": "^17.6.0",
+      "jsonwebtoken": "^8.5.1",
+      "mongoose": "^6.3.0",
+      "rbac": "^5.0.3"
+    },
+    "devDependencies": {
+      "nodemon": "^2.0.15"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
