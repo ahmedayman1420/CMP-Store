@@ -1,8 +1,8 @@
 // ====== --- ====== > User module endpoints < ====== --- ====== //
-const updateUserPassword = "User:updateUserPassword";
+// const updateUserPassword = "User:updateUserPassword";
 
 const userEndpoints = {
-    updateUserPassword,
+    // updateUserPassword,
 };
 
 // ====== --- ====== > Export user endpoints < ====== --- ====== //

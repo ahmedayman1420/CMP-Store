@@ -19,6 +19,7 @@ const isAuthorized = (endPoint) => {
           if (token.length < 500) {
             // Memories Token
             var decoded = jwt.verify(token, process.env.ENCRYPT_KEY).data;
+            console.log({decoded})
             var isAllowed = await userRbac.can(
               decoded.role.toString(),
               endPoint

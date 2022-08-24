@@ -1,11 +1,11 @@
 // ====== --- ====== > Modules endpoints < ====== --- ====== //
 const Rbac = require("easy-rbac");
-const userEndpoints = require("../../modules/users/endpoints");
+const categoryEndpoints = require("../../modules/categories/category-endpoints");
 const roles = require("../Enum/roles");
 
 // ====== --- ====== > Roles policies < ====== --- ====== //
-const userPolicies = [userEndpoints.updateUserPassword];
-const adminPolicies = [];
+const userPolicies = [];
+const adminPolicies = [categoryEndpoints.addCategoryEndpoint];
 const superAdminPolicies = [];
 
 // ====== --- ====== > Match Between Roles & Them EndPoints < ====== --- ====== //

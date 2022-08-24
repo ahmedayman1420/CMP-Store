@@ -1,10 +1,10 @@
 // ====== --- ====== > Import Modules & Variables Declaration < ====== --- ====== //
 const express = require("express");
 const router = express.Router();
-const userFunctions = require("../conroller/user-control");
+const userFunctions = require("../controller/user-control");
 const userSchemas = require("../joi/user-joi");
 const validateRequest = require("../../../Common/Middlewares/requestValidation");
-const userEndpoints = require("../endpoints");
+const userEndpoints = require("../user-endpoints");
 const isAuthorized = require("../../../Common/Middlewares/isAuthorized");
 /*
 //==// require express to create sub-object that will used to contains user apis
