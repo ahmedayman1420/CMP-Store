@@ -3,6 +3,7 @@ const categories = require("../model/category-model");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const { StatusCodes } = require("http-status-codes");
+const cloudinary = require("cloudinary");
 
 // ====== --- ====== > Category Methods < ====== --- ====== //
 
@@ -35,7 +36,98 @@ const addCategory = async (req, res) => {
   }
 };
 
+/*
+//==// editCategory: is the logic of '/category/edit/:id' api that used to edit category with given (id) field.
+the response of this function in success (Editing Category Success), in failure (show error message).
+*/
+
+const editCategory = async (req, res) => {
+  try {
+    let { name } = req.body;
+    let { id } = req.params;
+
+    const isCategoryFound = await categories.findOne({
+      _id: id,
+      isDeleted: false,
+    });
+    if (isCategoryFound) {
+      const oldCategory = await categories.findOne({ name, isDeleted: false });
+      if (!oldCategory) {
+        const data = await categories.findByIdAndUpdate(
+          id,
+          { name },
+          {
+            new: true,
+          }
+        );
+
+        res.status(StatusCodes.OK).json({
+          Message: "Editing Category Success",
+          payload: { category: data },
+        });
+      } else {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ Message: "Category is Already Found" });
+      }
+    } else res.status(StatusCodes.BAD_REQUEST).json({ Message: "Invalid Id" });
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  }
+};
+
+/*
+//==// deleteCategory: is the logic of '/category/delete/:id' api that used to delete category with given (id) field.
+the response of this function in success (Deleting Category Success), in failure (show error message).
+*/
+
+const deleteCategory = async (req, res) => {
+  try {
+    let { id } = req.params;
+
+    const isCategoryFound = await categories.findOne({
+      _id: id,
+      isDeleted: false,
+    });
+
+    if (isCategoryFound) {
+      const data = await categories.findByIdAndDelete(id);
+
+      res.status(StatusCodes.OK).json({
+        Message: "Deleting Category Success",
+        payload: { category: data },
+      });
+    } else res.status(StatusCodes.BAD_REQUEST).json({ Message: "Invalid Id" });
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  }
+};
+
+/*
+//==// getCategories: is the logic of '/category/all' api that used to get categories.
+the response of this function in success (Categories), in failure (show error message).
+*/
+
+const getCategories = async (req, res) => {
+  try {
+    const data = await categories.find({});
+
+    res.status(StatusCodes.OK).json({
+      Message: "Get Categories Success",
+      payload: { categories: data },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  }
+};
+
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = {
   addCategory,
+  editCategory,
+  deleteCategory,
+  getCategories,
 };

@@ -17,5 +17,24 @@ router.post(
   categoryFunctions.addCategory
 );
 
+// edit category api
+router.put(
+  "/category/edit/:id",
+  validateRequest(categorySchemas.editCategorySchema),
+  isAuthorized(categoryEndpoints.editCategoryEndpoint),
+  categoryFunctions.editCategory
+);
+
+// delete category api
+router.delete(
+  "/category/delete/:id",
+  validateRequest(categorySchemas.deleteCategorySchema),
+  isAuthorized(categoryEndpoints.deleteCategoryEndpoint),
+  categoryFunctions.deleteCategory
+);
+
+// get categories api
+router.get("/category/all", categoryFunctions.getCategories);
+
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = router;

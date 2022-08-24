@@ -5,7 +5,11 @@ const roles = require("../Enum/roles");
 
 // ====== --- ====== > Roles policies < ====== --- ====== //
 const userPolicies = [];
-const adminPolicies = [categoryEndpoints.addCategoryEndpoint];
+const adminPolicies = [
+  categoryEndpoints.addCategoryEndpoint,
+  categoryEndpoints.editCategoryEndpoint,
+  categoryEndpoints.deleteCategoryEndpoint,
+];
 const superAdminPolicies = [];
 
 // ====== --- ====== > Match Between Roles & Them EndPoints < ====== --- ====== //
