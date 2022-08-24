@@ -3,7 +3,6 @@ const categories = require("../model/category-model");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const { StatusCodes } = require("http-status-codes");
-const cloudinary = require("cloudinary");
 
 // ====== --- ====== > Category Methods < ====== --- ====== //
 

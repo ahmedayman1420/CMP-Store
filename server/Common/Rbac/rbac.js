@@ -1,14 +1,20 @@
 // ====== --- ====== > Modules endpoints < ====== --- ====== //
 const Rbac = require("easy-rbac");
 const categoryEndpoints = require("../../modules/categories/category-endpoints");
+const productEndpoints = require("../../modules/products/product-endpoints");
 const roles = require("../Enum/roles");
 
 // ====== --- ====== > Roles policies < ====== --- ====== //
 const userPolicies = [];
+
 const adminPolicies = [
   categoryEndpoints.addCategoryEndpoint,
   categoryEndpoints.editCategoryEndpoint,
   categoryEndpoints.deleteCategoryEndpoint,
+
+  productEndpoints.createProductEndpoint,
+  productEndpoints.editProductEndpoint,
+  productEndpoints.deleteProductEndpoint,
 ];
 const superAdminPolicies = [];
 

@@ -17,6 +17,7 @@ code is based on The Twelve-Factor App methodology.
 
 const userRouter = require("./modules/users/routes/user-routes");
 const categoryRouter = require("./modules/categories/routes/category-routes");
+const productRouter = require("./modules/products/routes/product-routes");
 const Connection = require("./Configration/configDB");
 /*
 //==// userRouter: is a router object that contains user module apis.
@@ -42,6 +43,7 @@ app.use(express.json({ limit: "50mb" })); // General Middelware
 app.use(express.urlencoded({ limit: "50mb", extended: true })); // General Middelware
 app.use(userRouter); // user routes
 app.use(categoryRouter); // category routes
+app.use(productRouter); // product routes
 /*
 //==// To setup your middleware, you can invoke app.use(<specific_middleware_layer_here>) for every middleware 
 layer that you want to add (it can be generic to all paths, or triggered only on specific path(s)
