@@ -12,8 +12,17 @@ the response of this function in success (Creating product success), in failure 
 */
 const createProduct = async (req, res) => {
   try {
-    let { title, price, description, content, images, category, creator } =
-      req.body;
+    let {
+      title,
+      price,
+      description,
+      discountPercentage,
+      stock,
+      brand,
+      category,
+      images,
+      creator,
+    } = req.body;
 
     const oldProduct = await products.findOne({ title, isDeleted: false });
     if (!oldProduct) {
@@ -21,9 +30,13 @@ const createProduct = async (req, res) => {
         title,
         price,
         description,
-        content,
-        images,
+
+        discountPercentage,
+        stock,
+        brand,
+
         category,
+        images,
         creator,
       });
 
@@ -50,8 +63,18 @@ the response of this function in success (Editing product success), in failure (
 */
 const editProduct = async (req, res) => {
   try {
-    let { title, price, description, content, images, category, creator } =
-      req.body;
+    let {
+      title,
+      price,
+      description,
+      discountPercentage,
+      stock,
+      brand,
+      category,
+      images,
+      creator,
+    } = req.body;
+
     let { id } = req.params;
 
     const oldProduct = await products.findOne({ _id: id, isDeleted: false });
@@ -68,9 +91,11 @@ const editProduct = async (req, res) => {
             title,
             price,
             description,
-            content,
-            images,
+            discountPercentage,
+            stock,
+            brand,
             category,
+            images,
             creator,
           },
           {
@@ -126,10 +151,30 @@ the response of this function in success (products), in failure (show error mess
 */
 const getProducts = async (req, res) => {
   try {
-    const data = await products.find({});
+    let { page, filter, sort } = req.query;
+    let sortOptions = [
+      { sold: -1 },
+      { price: 1 },
+      { price: -1 },
+      { _id: 1 },
+      { _id: -1 },
+    ];
+
+    const limit = 10;
+
+    let skip = (Number(page) - 1) * limit;
+
+    const data = await products
+      .find({ isDeleted: false, category: filter })
+      .populate("creator")
+      .populate("category")
+      .limit(limit)
+      .skip(skip)
+      .sort(sortOptions[Number(sort)]);
+
     res.status(StatusCodes.OK).json({
-      Message: "Deleting product success",
-      payload: { product: data },
+      Message: "Getting products success",
+      payload: { products: data },
     });
   } catch (error) {
     console.log(error);

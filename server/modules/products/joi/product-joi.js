@@ -12,7 +12,11 @@ const productJoi = {
         title: joi.string().required(),
         price: joi.number().required(),
         description: joi.string().required(),
-        content: joi.string().required(),
+
+        discountPercentage: joi.number().required(),
+        stock: joi.number().required(),
+        brand: joi.string().required(),
+
         images: joi.array().items(joi.string()).required(),
         category: joi.string().required(),
         creator: joi.string().required(),
@@ -34,7 +38,11 @@ const productJoi = {
         title: joi.string().required(),
         price: joi.number().required(),
         description: joi.string().required(),
-        content: joi.string().required(),
+
+        discountPercentage: joi.number().required(),
+        stock: joi.number().required(),
+        brand: joi.string().required(),
+
         images: joi.array().items(joi.string()).required(),
         category: joi.string().required(),
         creator: joi.string().required(),
@@ -62,6 +70,14 @@ const productJoi = {
         authorization: joi.string().required(),
       })
       .options({ allowUnknown: true }),
+  },
+
+  getProductsSchema: {
+    query: joi.object().required().keys({
+      page: joi.number().required(),
+      filter: joi.string().required(),
+      sort: joi.number().required(),
+    }),
   },
 };
 

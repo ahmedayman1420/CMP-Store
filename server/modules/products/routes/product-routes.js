@@ -35,8 +35,9 @@ router.delete(
 
 // get products api
 router.get(
-    "/product/all",
-    productFunctions.getProducts
-  );
+  "/product/all",
+  validateRequest(productSchemas.getProductsSchema),
+  productFunctions.getProducts
+);
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = router;
