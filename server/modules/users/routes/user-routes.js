@@ -34,6 +34,13 @@ router.post(
   userFunctions.signIn
 );
 
+// signin api
+router.post(
+  "/google",
+  validateRequest(userSchemas.googleSigninSchema),
+  userFunctions.googleSignIn
+);
+
 // update api
 // router.post(
 //   "/user-update-password",

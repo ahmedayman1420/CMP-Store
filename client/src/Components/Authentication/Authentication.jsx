@@ -6,10 +6,14 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
-// ======= --- ======= <| React |> ======= --- ======= //
-import { useNavigate } from "react-router-dom";
+// ======= --- ======= <| React-Router-Dom |> ======= --- ======= //
+import { useLocation, useNavigate } from "react-router-dom";
 
+// ======= --- ======= <| Component-Style |> ======= --- ======= //
 import Style from "./Authentication.module.scss";
+
+// ======= --- ======= <| Images |> ======= --- ======= //
+import logo from "../../Images/logo-cmp2.jpg";
 
 // ======= --- ======= <| Fontawesome |> ======= --- ======= //
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,9 +21,9 @@ import { faEyeSlash, faEye, faG } from "@fortawesome/free-solid-svg-icons";
 
 // ======= --- ======= <| Google-Login |> ======= --- ======= //
 import { GoogleLogin } from "react-google-login";
-// import { gapi } from "gapi-script";
+import { gapi } from "gapi-script";
 
-// ======= --- ======= <| Action Strings |> ======= --- ======= //
+// ======= --- ======= <| Action-Strings |> ======= --- ======= //
 import {
   errorResetAction,
   googleAuthAction,
@@ -28,7 +32,7 @@ import {
   unexpectedErrorAction,
   ERROR_SIGNIN,
   ERROR_SIGNUP,
-} from "../../Redux/Actions/Actions";
+} from "../../Redux/Actions/UserActions";
 
 // ======= --- ======= <| React-Redux |> ======= --- ======= //
 import { useDispatch, useSelector } from "react-redux";
@@ -36,20 +40,21 @@ import { useDispatch, useSelector } from "react-redux";
 function Authentication() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // ======= --- ======= <| Initialization of gapi |> ======= --- ======= //
-  /*  useEffect(() => {
+  useEffect(() => {
     function start() {
       gapi.client.init({
         clientId:
-          "633147263244-m08i8j19dacnbs07mjjqlflti4lhak2c.apps.googleusercontent.com",
+          "633147263244-hvd72t9m2kl63rsglmsdfdu68rg2l7e3.apps.googleusercontent.com",
         scope: "email",
       });
     }
 
     gapi.load("client:auth2", start);
   }, []);
-*/
+
   // ======= --- ======= <| Component states |> ======= --- ======= //
   let error = useSelector((state) => state.error);
   let [isSignIn, setIsSignIn] = useState(true);
@@ -64,6 +69,15 @@ function Authentication() {
   let [passwordShown, setPasswordShown] = useState(false);
 
   // ======= --- ======= <| Component functions |> ======= --- ======= //
+  const SigninOrRegister = () => {
+    if (location.pathname === "/signin") setIsSignIn(true);
+    else setIsSignIn(false);
+  };
+
+  useEffect(() => {
+    SigninOrRegister();
+  }, [location]);
+
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
   };
@@ -137,11 +151,12 @@ function Authentication() {
   };
   // ======= --- ======= <| Continue with Google |> ======= --- ======= //
   const responseGoogleSuccess = async (res) => {
-    //   console.log("Google Sign Up success");
-    //   const profile = res?.profileObj;
-    //   const token = res?.tokenId;
-    //   await dispatch(googleAuthAction(profile, token));
-    //   await navigate("/posts", { replace: true });
+    console.log("Google Sign Up success");
+    const profile = res?.profileObj;
+    const token = res?.tokenId;
+
+    dispatch(googleAuthAction(profile, token));
+    navigate("/", { replace: true });
   };
 
   const responseGoogleFailure = async (error) => {
@@ -152,13 +167,24 @@ function Authentication() {
   return (
     <>
       <div className="pt-5">
-        <div className="mt-5 d-flex justify-content-center align-items-center">
-          <Form className="w-50" onSubmit={sendData}>
+        <div className={["text-center mt-5 mb-4 w-25 m-auto "].join(" ")}>
+          <img src={logo} alt="" className={[Style.logo].join(" ")} />
+        </div>
+        <div
+          className={[
+            " d-flex justify-content-center align-items-center row",
+          ].join(" ")}
+        >
+          <Form
+            className={["col-md-6 col-10 p-3", Style.formCan].join(" ")}
+            onSubmit={sendData}
+          >
             {!isSignIn && (
               <Form.Group className="mb-3" controlId="formBasicFirstName">
                 <Form.Control
                   name="first_name"
                   type="text"
+                  className={Style.formControl}
                   required={true}
                   placeholder="First name"
                   onChange={getUser}
@@ -170,6 +196,7 @@ function Authentication() {
                 <Form.Control
                   name="last_name"
                   type="text"
+                  className={Style.formControl}
                   required={true}
                   placeholder="Last name"
                   onChange={getUser}
@@ -180,6 +207,7 @@ function Authentication() {
               <Form.Control
                 name="email"
                 type="email"
+                className={Style.formControl}
                 required={true}
                 placeholder="Enter email"
                 onChange={getUser}
@@ -192,6 +220,7 @@ function Authentication() {
               <Form.Control
                 name="password"
                 placeholder="Password"
+                className={Style.formControl}
                 required={true}
                 onChange={getUser}
                 type={passwordShown ? "text" : "password"}
@@ -212,6 +241,7 @@ function Authentication() {
                 <Form.Control
                   name="confirmPassword"
                   placeholder="Confirm Password"
+                  className={Style.formControl}
                   required={true}
                   onChange={getUser}
                   type={passwordShown ? "text" : "password"}
@@ -230,14 +260,18 @@ function Authentication() {
                 <Alert.Heading>{error.message}</Alert.Heading>
               </Alert>
             )}
-            <Button className="w-100 mb-3" variant="info" type="submit">
+            <Button
+              className={["w-100 mb-3"].join(" ")}
+              variant="warning"
+              type="submit"
+            >
               {waiting && "Waiting ... "}
               {!waiting && !isSignIn && "Signup"}
               {!waiting && isSignIn && "Signin"}
             </Button>
 
             <GoogleLogin
-              clientId="633147263244-m08i8j19dacnbs07mjjqlflti4lhak2c.apps.googleusercontent.com"
+              clientId="633147263244-hvd72t9m2kl63rsglmsdfdu68rg2l7e3.apps.googleusercontent.com"
               render={(renderProps) => (
                 <Button
                   className="w-100 mb-3"
@@ -256,28 +290,28 @@ function Authentication() {
             />
 
             {isSignIn && (
-              <Alert variant="primary">
+              <Alert variant="warning" className="mb-0">
                 <>
-                  <span>Don't have an account ?</span>{" "}
+                  <span>New to CMP ?</span>{" "}
                   <span
                     className={Style.sign}
                     onClick={() => {
-                      setIsSignIn(false);
+                      navigate("/register");
                     }}
                   >
-                    Sign Up
+                    Create your CMP account
                   </span>
                 </>
               </Alert>
             )}
             {!isSignIn && (
-              <Alert variant="primary">
+              <Alert variant="warning" className="mb-0">
                 <>
                   <span>Already have an account ?</span>{" "}
                   <span
                     className={Style.sign}
                     onClick={() => {
-                      setIsSignIn(true);
+                      navigate("/signin");
                     }}
                   >
                     Sign In

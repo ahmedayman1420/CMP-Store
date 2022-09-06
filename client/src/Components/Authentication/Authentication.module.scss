@@ -19,3 +19,22 @@
 .confirmPasswrodIcon:hover {
   cursor: pointer;
 }
+
+.logo {
+  border-radius: 50%;
+  width: 35%;
+}
+
+.formCan {
+  border: solid 1px #f3ce71;
+}
+
+.submitBtn {
+  background-color: #f3ce71 !important;
+}
+
+.formControl:focus {
+  border-color: #f3ce71 !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgba(243, 206, 113, 0.6) !important;
+}

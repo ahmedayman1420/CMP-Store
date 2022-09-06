@@ -2,3 +2,27 @@
   border-radius: 15px;
   box-shadow: 5px 5px 50px black;
 }
+
+.navBrand {
+  width: 75px;
+}
+
+.W40 {
+  width: 40% !important;
+}
+
+.profileImg {
+  border-radius: 20px !important;
+}
+
+.navCan{
+  width:100%;
+  display: flex !important;
+  justify-content: end !important;
+}
+
+.formControl:focus {
+  border-color: #f3ce71 !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgba(243, 206, 113, 0.6) !important;
+}

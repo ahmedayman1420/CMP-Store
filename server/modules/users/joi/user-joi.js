@@ -39,6 +39,21 @@ const userJoi = {
         password: joi.string().required(),
       }),
   },
+  googleSigninSchema: {
+    body: joi
+      .object()
+      .required()
+      .keys({
+        email: joi
+          .string()
+          .email({
+            minDomainSegments: 2,
+            tlds: { allow: ["com", "net"] },
+          })
+          .required(),
+        name: joi.string().required(),
+      }),
+  },
   updatePasswordSchema: {
     body: joi.object().required().keys({
       oldPassword: joi.string().required(),
