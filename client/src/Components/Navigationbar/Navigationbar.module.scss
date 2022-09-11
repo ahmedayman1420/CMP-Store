@@ -15,8 +15,8 @@
   border-radius: 20px !important;
 }
 
-.navCan{
-  width:100%;
+.navCan {
+  width: 100%;
   display: flex !important;
   justify-content: end !important;
 }
@@ -25,4 +25,18 @@
   border-color: #f3ce71 !important;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
     0 0 8px rgba(243, 206, 113, 0.6) !important;
+}
+
+.dropdown {
+  width: 50px !important;
+  height: 50px !important;
+  background-color: #084e54 !important;
+  transition: 1s all !important;
+  color: wheat !important;
+}
+
+.dropdown:hover {
+  border: #084e54 solid 1px;
+  color: #084e54 !important;
+  background-color: #fff !important;
 }

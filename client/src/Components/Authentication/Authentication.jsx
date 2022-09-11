@@ -155,7 +155,7 @@ function Authentication() {
     const profile = res?.profileObj;
     const token = res?.tokenId;
 
-    dispatch(googleAuthAction(profile, token));
+    await dispatch(googleAuthAction(profile, token));
     navigate("/", { replace: true });
   };
 
