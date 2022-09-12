@@ -33,10 +33,19 @@
   background-color: #084e54 !important;
   transition: 1s all !important;
   color: wheat !important;
+  position: relative;
 }
 
 .dropdown:hover {
   border: #084e54 solid 1px;
   color: #084e54 !important;
   background-color: #fff !important;
+}
+
+.dropdownImg {
+  width: 50px !important;
+  height: 50px !important;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

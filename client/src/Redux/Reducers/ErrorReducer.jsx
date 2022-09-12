@@ -1,13 +1,23 @@
 // ======= --- ======= <| Actions Strings |> ======= --- ======= //
-import { ERROR_ADD_POST } from "../Actions/ActionStrings";
+import {
+  ERROR_RESET,
+  Error_SIGNIN,
+  ERROR_SIGNUP,
+} from "../Actions/ActionStrings";
 
 const errorReducer = (
   state = { value: false, message: "", type: "" },
   action
 ) => {
   switch (action.type) {
-    case ERROR_ADD_POST:
-      return { ...action.payload, type: "post" };
+    case ERROR_SIGNUP:
+      return { ...action.payload };
+
+    case Error_SIGNIN:
+      return { ...action.payload };
+
+    case ERROR_RESET:
+      return { ...action.payload };
 
     default:
       return state;

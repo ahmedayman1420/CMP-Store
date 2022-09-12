@@ -12,12 +12,12 @@ the response of this function in success (Sign up Successfully), in failure (sho
 */
 const signUp = async (req, res) => {
   try {
-    let { name, email, password, confirmPassword } = req.body;
+    let { name, email, password, confirmPassword, mobile } = req.body;
 
     const oldUser = await users.findOne({ email, isDeleted: false });
     if (!oldUser) {
       if (password === confirmPassword) {
-        const newUser = new users({ name, email, password });
+        const newUser = new users({ name, email, password, mobile });
         const data = await newUser.save();
 
         var token = jwt.sign(
@@ -29,18 +29,18 @@ const signUp = async (req, res) => {
         );
 
         res.status(StatusCodes.CREATED).json({
-          Message: "Sign up Successfully",
+          message: "Sign up Successfully",
           payload: { token, user: newUser },
         });
       } else {
         res
           .status(StatusCodes.BAD_REQUEST)
-          .json({ Message: "Password not matched confirm passwords" });
+          .json({ message: "Password not matched confirm passwords" });
       }
     } else {
       res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ Message: "Email is Already Found" });
+        .json({ message: "Email is Already Found" });
     }
   } catch (error) {
     console.log(error);
@@ -75,18 +75,18 @@ const signIn = async (req, res) => {
               process.env.ENCRYPT_KEY
             );
             res.status(StatusCodes.OK).json({
-              Message: "Sign in Successfully",
+              message: "Sign in Successfully",
               payload: { token, user: oldUser },
             });
           } else {
             res
               .status(StatusCodes.BAD_REQUEST)
-              .json({ Message: "Incorrect Password !" });
+              .json({ message: "Incorrect Password !" });
           }
         }
       );
     } else {
-      res.status(StatusCodes.BAD_REQUEST).json({ Message: "User Not Found !" });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "User Not Found !" });
     }
   } catch (error) {
     console.log(error);

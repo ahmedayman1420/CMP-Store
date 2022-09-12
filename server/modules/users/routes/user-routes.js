@@ -22,14 +22,14 @@ router.get("/", (req, res) => {
 
 // signup api
 router.post(
-  "/signup",
+  "/user/signup",
   validateRequest(userSchemas.signupSchema),
   userFunctions.signUp
 );
 
 // signin api
 router.post(
-  "/signin",
+  "/user/signin",
   validateRequest(userSchemas.signinSchema),
   userFunctions.signIn
 );

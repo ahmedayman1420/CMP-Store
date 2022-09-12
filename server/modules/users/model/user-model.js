@@ -16,6 +16,8 @@ const userSchema = mongoose.Schema(
       required: true,
     },
 
+    mobile: { type: Number, required: true },
+
     password: { type: String, required: true },
 
     cart: { type: Array, default: [] },

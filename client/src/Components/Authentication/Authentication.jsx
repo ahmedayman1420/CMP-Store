@@ -20,22 +20,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye, faG } from "@fortawesome/free-solid-svg-icons";
 
 // ======= --- ======= <| Regex |> ======= --- ======= //
-import { validEmail, validPassword, validName } from "./Regex";
+import { validEmail, validPassword, validName, validMobile } from "./Regex";
 
 // ======= --- ======= <| Google-Login |> ======= --- ======= //
 import { GoogleLogin } from "react-google-login";
 import { gapi } from "gapi-script";
 
 // ======= --- ======= <| Action-Strings |> ======= --- ======= //
+import { Error_SIGNIN, ERROR_SIGNUP } from "../../Redux/Actions/ActionStrings";
+
+// ======= --- ======= <| User-Actions |> ======= --- ======= //
 import {
-  errorResetAction,
   googleAuthAction,
   signInAction,
   signUpAction,
-  unexpectedErrorAction,
-  ERROR_SIGNIN,
-  ERROR_SIGNUP,
 } from "../../Redux/Actions/UserActions";
+
+// ======= --- ======= <| Error-Actions |> ======= --- ======= //
+import { unexpectedErrorAction } from "../../Redux/Actions/ErrorActions";
 
 // ======= --- ======= <| React-Redux |> ======= --- ======= //
 import { useDispatch, useSelector } from "react-redux";
@@ -62,15 +64,28 @@ function Authentication() {
   let error = useSelector((state) => state.error);
   let [isSignIn, setIsSignIn] = useState(true);
   let [user, setUser] = useState({
-    first_name: "",
-    last_name: "",
+    name: "",
+    mobile: -1,
     email: "",
     password: "",
     confirmPassword: "",
   });
+  let [validInput, setValidInput] = useState({
+    name: false,
+    mobile: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+
+    startName: false,
+    startMobile: false,
+    startEmail: false,
+    startPassword: false,
+    startConfirmPassword: false,
+  });
   let [waiting, setWaiting] = useState(false);
   let [passwordShown, setPasswordShown] = useState(false);
-
+  let [result, setResult] = useState(false);
   // ======= --- ======= <| Component functions |> ======= --- ======= //
   const SigninOrRegister = () => {
     if (location.pathname === "/signin") setIsSignIn(true);
@@ -91,67 +106,112 @@ function Authentication() {
     });
   };
 
+  const isValidInput = (index, value) => {
+    if (index === 0) {
+      setValidInput((prevState) => {
+        return { ...prevState, name: validName.test(value) };
+      });
+    } else if (index === 1) {
+      setValidInput((prevState) => {
+        return { ...prevState, mobile: validMobile.test(value) };
+      });
+    } else if (index === 2) {
+      setValidInput((prevState) => {
+        return { ...prevState, email: validEmail.test(value) };
+      });
+    } else if (index === 3) {
+      setValidInput((prevState) => {
+        return { ...prevState, password: validPassword.test(value) };
+      });
+    } else if (index === 4) {
+      setValidInput((prevState) => {
+        return {
+          ...prevState,
+          confirmPassword: validPassword.test(value) && value === user.password,
+        };
+      });
+    }
+
+    if (isSignIn) setResult(validInput.email && validInput.password);
+    else
+      setResult(
+        validInput.name &&
+          validInput.mobile &&
+          validInput.email &&
+          validInput.password &&
+          validInput.confirmPassword
+      );
+  };
+
+  const signin = async () => {
+    const result = validInput.email && validInput.password;
+
+    if (result) {
+      const res = await dispatch(
+        signInAction({
+          email: user.email,
+          password: user.password,
+        })
+      );
+
+      if (res) {
+        navigate("/", { replace: true });
+      }
+    } else {
+      await dispatch(
+        unexpectedErrorAction(Error_SIGNIN, {
+          type: "auth",
+          value: true,
+          message: Error_SIGNIN,
+        })
+      );
+    }
+  };
+
+  const register = async () => {
+    const result =
+      validInput.name &&
+      validInput.mobile &&
+      validInput.email &&
+      validInput.password &&
+      validInput.confirmPassword;
+
+    if (result) {
+      const res = await dispatch(
+        signUpAction({
+          email: user.email,
+          password: user.password,
+          confirmPassword: user.confirmPassword,
+          name: user.name,
+          mobile: user.mobile,
+        })
+      );
+
+      if (res) {
+        navigate("/", { replace: true });
+      }
+    } else {
+      await dispatch(
+        unexpectedErrorAction(ERROR_SIGNUP, {
+          type: "auth",
+          value: true,
+          message: ERROR_SIGNUP,
+        })
+      );
+    }
+  };
+
   const sendData = async (e) => {
     e.preventDefault();
     setWaiting(true);
-    /*
 
-    if (isSignIn) {
-      // ======= --- ======= <| Sign-in case |> ======= --- ======= //
-      let result =
-        user.email !== "" &&
-        !/^\s/.test(user.emai) &&
-        user.password !== "" &&
-        !/^\s/.test(user.password);
-      if (result) {
-        const res = await dispatch(
-          signInAction({
-            email: user.email,
-            password: user.password,
-            confirmPassword: user.confirmPassword,
-            name: `${user.first_name} ${user.last_name}`,
-          })
-        );
-        if (res?.data?.message === "Sign in Successfully") {
-          await dispatch(errorResetAction());
-          navigate("/posts", { replace: true });
-        } else {
-          await dispatch(unexpectedErrorAction(ERROR_SIGNIN));
-        }
-      } else {
-        await dispatch(unexpectedErrorAction(ERROR_SIGNIN));
-      }
-      setWaiting(false);
-    } else {
-      // ======= --- ======= <| Register case |> ======= --- ======= //
-      let result = Object.values(user).every((p) => {
-        return p !== "" && !/^\s/.test(p);
-      });
+    if (isSignIn) await signin();
+    else await register();
 
-      if (result) {
-        const res = await dispatch(
-          signUpAction({
-            email: user.email,
-            password: user.password,
-            confirmPassword: user.confirmPassword,
-            name: `${user.first_name} ${user.last_name}`,
-          })
-        );
-        if (res?.data?.message === "Sign up Successfully") {
-          await dispatch(errorResetAction());
-          setWaiting(false);
-          navigate("/posts", { replace: true });
-        } else {
-          setWaiting(false);
-          await dispatch(unexpectedErrorAction(ERROR_SIGNUP));
-        }
-      } else {
-        await dispatch(unexpectedErrorAction(ERROR_SIGNUP));
-      }
-      setWaiting(false);
-    }
-*/
+    setWaiting(false);
   };
+
+  console.log(error);
   // ======= --- ======= <| Continue with Google |> ======= --- ======= //
   const responseGoogleSuccess = async (res) => {
     console.log("Google Sign Up success");
@@ -185,25 +245,53 @@ function Authentication() {
             {!isSignIn && (
               <Form.Group className="mb-3" controlId="formBasicFirstName">
                 <Form.Control
-                  name="first_name"
+                  name="name"
                   type="text"
                   className={Style.formControl}
                   required={true}
-                  placeholder="First name"
-                  onChange={getUser}
+                  placeholder="First and last name"
+                  onChange={(e) => {
+                    getUser(e);
+                    isValidInput(0, e.target.value);
+                    setValidInput((prevState) => {
+                      return {
+                        ...prevState,
+                        startName: true,
+                      };
+                    });
+                  }}
                 />
+                {!validInput.name && validInput.startName && (
+                  <Alert variant="primary" className="mt-3">
+                    Your name must start with a uppercase letter
+                  </Alert>
+                )}
               </Form.Group>
             )}
             {!isSignIn && (
               <Form.Group className="mb-3" controlId="formBasicLirstName">
                 <Form.Control
-                  name="last_name"
-                  type="text"
+                  name="mobile"
+                  type="number"
                   className={Style.formControl}
                   required={true}
-                  placeholder="Last name"
-                  onChange={getUser}
+                  placeholder="Mobile number"
+                  onChange={(e) => {
+                    getUser(e);
+                    isValidInput(1, e.target.value);
+                    setValidInput((prevState) => {
+                      return {
+                        ...prevState,
+                        startMobile: true,
+                      };
+                    });
+                  }}
                 />
+                {!validInput.mobile && validInput.startMobile && (
+                  <Alert variant="primary" className="mt-3">
+                    Invalid mobile number
+                  </Alert>
+                )}
               </Form.Group>
             )}
             <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -213,49 +301,118 @@ function Authentication() {
                 className={Style.formControl}
                 required={true}
                 placeholder="Enter email"
-                onChange={getUser}
+                onChange={(e) => {
+                  getUser(e);
+                  isValidInput(2, e.target.value);
+                  setValidInput((prevState) => {
+                    return {
+                      ...prevState,
+                      startEmail: true,
+                    };
+                  });
+                }}
               />
+              {!validInput.email && validInput.startEmail && (
+                <Alert variant="primary" className="mt-3">
+                  Please include a valid domain in the email address.
+                </Alert>
+              )}
             </Form.Group>
             <Form.Group
-              className={["mb-3", Style.password].join(" ")}
+              className={["mb-3"].join(" ")}
               controlId="formBasicPassword"
             >
-              <Form.Control
-                name="password"
-                placeholder="Password"
-                className={Style.formControl}
-                required={true}
-                onChange={getUser}
-                type={passwordShown ? "text" : "password"}
-              />
-
-              <FontAwesomeIcon
-                className={[Style.icon, Style.posswordIcon].join(" ")}
-                size="lg"
-                icon={passwordShown ? faEye : faEyeSlash}
-                onClick={togglePassword}
-              />
-            </Form.Group>
-            {!isSignIn && (
-              <Form.Group
-                className={["mb-3", Style.confirmPasswrod].join(" ")}
-                controlId="formBasicConfirmPassword"
-              >
+              <div className={[Style.password].join(" ")}>
                 <Form.Control
-                  name="confirmPassword"
-                  placeholder="Confirm Password"
-                  className={Style.formControl}
+                  name="password"
+                  placeholder="Password"
+                  className={[Style.formControl].join(" ")}
                   required={true}
-                  onChange={getUser}
+                  onChange={(e) => {
+                    getUser(e);
+                    isValidInput(3, e.target.value);
+                    setValidInput((prevState) => {
+                      return {
+                        ...prevState,
+                        startPassword: true,
+                      };
+                    });
+                  }}
                   type={passwordShown ? "text" : "password"}
                 />
-
                 <FontAwesomeIcon
-                  className={[Style.icon, Style.confirmPasswrodIcon].join(" ")}
+                  className={[Style.icon, Style.posswordIcon].join(" ")}
                   size="lg"
                   icon={passwordShown ? faEye : faEyeSlash}
                   onClick={togglePassword}
                 />
+              </div>
+
+              {!validInput.password && validInput.startPassword && (
+                <Alert variant="primary" className="mt-3">
+                  {!isSignIn && (
+                    <div>
+                      <p>Your password must:</p>
+                      <ul>
+                        <li>Contain at least 8 characters</li>
+                        <li>
+                          At least one uppercase letter, one lowercase letter,
+                          one number and one special character
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                  {isSignIn && (
+                    <p
+                      style={{
+                        padding: "0px",
+                        margin: "0px",
+                      }}
+                    >
+                      Enter a valid password
+                    </p>
+                  )}
+                </Alert>
+              )}
+            </Form.Group>
+            {!isSignIn && (
+              <Form.Group
+                className={["mb-3"].join(" ")}
+                controlId="formBasicConfirmPassword"
+              >
+                <div className={[Style.confirmPasswrod].join(" ")}>
+                  <Form.Control
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    className={Style.formControl}
+                    required={true}
+                    onChange={(e) => {
+                      getUser(e);
+                      isValidInput(4, e.target.value);
+                      setValidInput((prevState) => {
+                        return {
+                          ...prevState,
+                          startConfirmPassword: true,
+                        };
+                      });
+                    }}
+                    type={passwordShown ? "text" : "password"}
+                  />
+                  <FontAwesomeIcon
+                    className={[Style.icon, Style.confirmPasswrodIcon].join(
+                      " "
+                    )}
+                    size="lg"
+                    icon={passwordShown ? faEye : faEyeSlash}
+                    onClick={togglePassword}
+                  />
+                </div>
+                {!validInput.confirmPassword &&
+                  validInput.startConfirmPassword && (
+                    <Alert variant="primary" className="mt-3">
+                      Password confirmation does not match password
+                    </Alert>
+                  )}
               </Form.Group>
             )}
             {error.value && error.type === "auth" && (
@@ -267,6 +424,18 @@ function Authentication() {
               className={["w-100 mb-3"].join(" ")}
               variant="warning"
               type="submit"
+              disabled={
+                (!(isSignIn && validInput.email && validInput.password) &&
+                  !(
+                    !isSignIn &&
+                    validInput.name &&
+                    validInput.mobile &&
+                    validInput.email &&
+                    validInput.password &&
+                    validInput.confirmPassword
+                  )) ||
+                waiting
+              }
             >
               {waiting && "Waiting ... "}
               {!waiting && !isSignIn && "Signup"}

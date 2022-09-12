@@ -2,7 +2,7 @@
 
 export const validEmail = new RegExp(
   //Valid email
-  /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/
+  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 );
 
 export const validPassword = new RegExp(
@@ -13,4 +13,9 @@ export const validPassword = new RegExp(
 export const validName = new RegExp(
   // Valid name
   /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/
+);
+
+export const validMobile = new RegExp(
+  // Valid mobile
+  /^01[0125][0-9]{8}$/
 );

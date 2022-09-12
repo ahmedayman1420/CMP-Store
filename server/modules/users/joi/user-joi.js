@@ -20,6 +20,7 @@ const userJoi = {
             tlds: { allow: ["com", "net"] },
           })
           .required(),
+        mobile: joi.number().required(),
         password: joi.string().required(),
         confirmPassword: joi.string().required(),
       }),

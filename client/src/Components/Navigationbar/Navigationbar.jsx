@@ -44,10 +44,6 @@ function Navigationbar() {
   const getUserFromLocalstorage = () => {
     let userImg = JSON.parse(localStorage.getItem("CMPProfile"))?.imageUrl;
     let userName = localStorage.getItem("CMPUser");
-    console.log(localStorage.getItem("CMPUser"));
-    console.log("HERE-2");
-    console.log({ userImg });
-    console.log({ userName });
 
     if (userName) {
       setUser({ userImg, userName });
@@ -55,7 +51,6 @@ function Navigationbar() {
   };
 
   useEffect(() => {
-    console.log("HERE-1");
     ShowOrHideNavbar();
     getUserFromLocalstorage();
   }, [location]);
@@ -128,17 +123,29 @@ function Navigationbar() {
                     className={["rounded-circle", Style.dropdown].join(" ")}
                     onClick={handleShow}
                   >
-                    <strong
-                      style={{
-                        fontSize: "21px",
-                        fontWeight: "bold",
-                      }}
-                      className={[Style.dropdownText].join(" ")}
-                    >
-                      {user.userName[0]}
-                    </strong>
+                    {user?.userImg && (
+                      <div
+                        className={["rounded-circle", Style.dropdownImg].join(
+                          " "
+                        )}
+                      >
+                        <img src={user.userImg} alt="" className="w-100 rounded-circle" />
+                      </div>
+                    )}
+                    {!user?.userImg && (
+                      <strong
+                        style={{
+                          fontSize: "21px",
+                          fontWeight: "bold",
+                        }}
+                        className={[Style.dropdownText].join(" ")}
+                      >
+                        {user.userName[0]}
+                      </strong>
+                    )}
                   </Button>
                 )}
+
                 {user && (
                   <Offcanvas placement="end" show={show} onHide={handleClose}>
                     <Offcanvas.Header closeButton>
