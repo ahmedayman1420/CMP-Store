@@ -19,6 +19,9 @@ import logo from "../../Images/logo-cmp2.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye, faG } from "@fortawesome/free-solid-svg-icons";
 
+// ======= --- ======= <| Regex |> ======= --- ======= //
+import { validEmail, validPassword, validName } from "./Regex";
+
 // ======= --- ======= <| Google-Login |> ======= --- ======= //
 import { GoogleLogin } from "react-google-login";
 import { gapi } from "gapi-script";
@@ -166,17 +169,17 @@ function Authentication() {
 
   return (
     <>
-      <div className="pt-5">
+      <div className="pt-5 ">
         <div className={["text-center mt-5 mb-4 w-25 m-auto "].join(" ")}>
           <img src={logo} alt="" className={[Style.logo].join(" ")} />
         </div>
         <div
           className={[
-            " d-flex justify-content-center align-items-center row",
+            " d-flex justify-content-center align-items-center row w-100 ",
           ].join(" ")}
         >
           <Form
-            className={["col-md-6 col-10 p-3", Style.formCan].join(" ")}
+            className={["col-md-6 col-sm-10 p-3 mb-5", Style.formCan].join(" ")}
             onSubmit={sendData}
           >
             {!isSignIn && (

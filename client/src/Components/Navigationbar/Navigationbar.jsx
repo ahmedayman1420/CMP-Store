@@ -110,6 +110,11 @@ function Navigationbar() {
                 style={{ maxHeight: "100px" }}
                 navbarScroll
               >
+                {!user && (
+                  <Nav.Link as={NavLink} to="/signin" className="text-white">
+                    Sign in
+                  </Nav.Link>
+                )}
                 <Nav.Link as={NavLink} to="/orders" className="text-white">
                   Orders
                 </Nav.Link>
@@ -118,11 +123,11 @@ function Navigationbar() {
                   Cart
                 </Nav.Link>
 
-                <Button
-                  className={["rounded-circle", Style.dropdown].join(" ")}
-                  onClick={handleShow}
-                >
-                  {user && (
+                {user && (
+                  <Button
+                    className={["rounded-circle", Style.dropdown].join(" ")}
+                    onClick={handleShow}
+                  >
                     <strong
                       style={{
                         fontSize: "21px",
@@ -132,27 +137,28 @@ function Navigationbar() {
                     >
                       {user.userName[0]}
                     </strong>
-                  )}
-                </Button>
-
-                <Offcanvas placement="end" show={show} onHide={handleClose}>
-                  <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Hello CMP</Offcanvas.Title>
-                  </Offcanvas.Header>
-                  <Offcanvas.Body>
-                    <Nav.Link
-                      onClick={() => {
-                        localStorage.clear();
-                        setUser(null);
-                        handleClose();
-                      }}
-                      as={NavLink}
-                      to="/signin"
-                    >
-                      Logout
-                    </Nav.Link>
-                  </Offcanvas.Body>
-                </Offcanvas>
+                  </Button>
+                )}
+                {user && (
+                  <Offcanvas placement="end" show={show} onHide={handleClose}>
+                    <Offcanvas.Header closeButton>
+                      <Offcanvas.Title>Hello CMP</Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                      <Nav.Link
+                        onClick={() => {
+                          localStorage.clear();
+                          setUser(null);
+                          handleClose();
+                        }}
+                        as={NavLink}
+                        to="/signin"
+                      >
+                        Logout
+                      </Nav.Link>
+                    </Offcanvas.Body>
+                  </Offcanvas>
+                )}
               </Nav>
             </div>
           </Navbar.Collapse>
