@@ -11,9 +11,9 @@ import { errorResetAction, unexpectedErrorAction } from "./ErrorActions";
 export const googleAuthAction = (profile, token) => async (dispatch) => {
   const res = await googleSigninAPI(token);
 
-  localStorage.setItem("CMPToken", res.data.payload.token);
-  localStorage.setItem("CMPProfile", JSON.stringify(profile));
-  localStorage.setItem("CMPUser", res.data.payload.user.name);
+  await localStorage.setItem("CMPToken", res.data.payload.token);
+  await localStorage.setItem("CMPProfile", JSON.stringify(profile));
+  await localStorage.setItem("CMPUser", res.data.payload.user.name);
 
   return true;
 };
@@ -29,8 +29,8 @@ export const signUpAction = (user) => async (dispatch) => {
     dispatch(unexpectedErrorAction(ERROR_SIGNUP, payload));
     return false;
   } else {
-    localStorage.setItem("CMPToken", res.data.payload.token);
-    localStorage.setItem("CMPUser", res.data.payload.user.name);
+    await localStorage.setItem("CMPToken", res.data.payload.token);
+    await localStorage.setItem("CMPUser", res.data.payload.user.name);
 
     dispatch(errorResetAction());
     return true;
@@ -49,8 +49,8 @@ export const signInAction = (user) => async (dispatch) => {
     dispatch(unexpectedErrorAction(Error_SIGNIN, payload));
     return false;
   } else {
-    localStorage.setItem("CMPToken", res.data.payload.token);
-    localStorage.setItem("CMPUser", res.data.payload.user.name);
+    await localStorage.setItem("CMPToken", res.data.payload.token);
+    await localStorage.setItem("CMPUser", res.data.payload.user.name);
 
     dispatch(errorResetAction());
     return true;

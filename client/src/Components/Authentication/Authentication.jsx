@@ -65,7 +65,7 @@ function Authentication() {
   let [isSignIn, setIsSignIn] = useState(true);
   let [user, setUser] = useState({
     name: "",
-    mobile: -1,
+    mobile: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -211,7 +211,6 @@ function Authentication() {
     setWaiting(false);
   };
 
-  console.log(error);
   // ======= --- ======= <| Continue with Google |> ======= --- ======= //
   const responseGoogleSuccess = async (res) => {
     console.log("Google Sign Up success");
@@ -272,7 +271,7 @@ function Authentication() {
               <Form.Group className="mb-3" controlId="formBasicLirstName">
                 <Form.Control
                   name="mobile"
-                  type="number"
+                  type="text"
                   className={Style.formControl}
                   required={true}
                   placeholder="Mobile number"

@@ -8,8 +8,11 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Dropdown from "react-bootstrap/Dropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
+import Col from "react-bootstrap/Col";
+import ListGroup from "react-bootstrap/ListGroup";
+import Row from "react-bootstrap/Row";
+import Tab from "react-bootstrap/Tab";
 
 // ======= --- ======= <| React-Router-Dom |> ======= --- ======= //
 import { NavLink, useLocation } from "react-router-dom";
@@ -17,7 +20,8 @@ import { NavLink, useLocation } from "react-router-dom";
 // ======= --- ======= <| Images |> ======= --- ======= //
 import logo from "../../Images/logo-cmp2.jpg";
 
-// ======= --- ======= <| React-Redux |> ======= --- ======= //
+// ======= --- ======= <| JWT-Decode |> ======= --- ======= //
+import jwt_decode from "jwt-decode";
 
 // ======= --- ======= <| Fontawesome |> ======= --- ======= //
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
@@ -30,6 +34,7 @@ function Navigationbar() {
   let [user, setUser] = useState(null);
   let [showOrHide, setShowOrHider] = useState("d-none");
   const [show, setShow] = useState(false);
+  let [admin, setAdmin] = useState({ role: "user", isAdmin: false });
 
   // ======= --- ======= <| Component Functinos |> ======= --- ======= //
   const handleClose = () => setShow(false);
@@ -41,22 +46,31 @@ function Navigationbar() {
     else setShowOrHider("d-block");
   };
 
-  const getUserFromLocalstorage = () => {
+  const getUserFromLocalstorage = async () => {
     let userImg = JSON.parse(localStorage.getItem("CMPProfile"))?.imageUrl;
     let userName = localStorage.getItem("CMPUser");
+    let token = localStorage.getItem("CMPToken");
 
     if (userName) {
       setUser({ userImg, userName });
+
+      let decoded = await jwt_decode(token);
+      if (decoded.data.role === "admin" || decoded.data.role === "superAdmin") {
+        setAdmin({ role: decoded.data.role, isAdmin: true });
+      }
     }
   };
 
-  useEffect(() => {
+  const Execute = async () => {
     ShowOrHideNavbar();
-    getUserFromLocalstorage();
+    await getUserFromLocalstorage();
+  };
+
+  useEffect(() => {
+    Execute();
   }, [location]);
   // ======= --- ======= <| Here need to create useEffect function to check the user token when changing the location, or may be use protected route instead of that |> ======= --- ======= //
 
-  console.log(user);
   return (
     <>
       <Navbar
@@ -68,7 +82,10 @@ function Navigationbar() {
       >
         <Container fluid>
           <Navbar.Brand as={NavLink} to="/" className={Style.navBrand}>
-            <img src={logo} style={{}} alt="" className="w-100" />
+            {admin.isAdmin && <h3>{admin.role}</h3>}
+            {!admin.isAdmin && (
+              <img src={logo} style={{}} alt="" className="w-100" />
+            )}
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />{" "}
           <Navbar.Collapse id="navbarScroll" className="row">
@@ -110,13 +127,15 @@ function Navigationbar() {
                     Sign in
                   </Nav.Link>
                 )}
-                <Nav.Link as={NavLink} to="/orders" className="text-white">
-                  Orders
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/cart" className="text-white">
-                  <FontAwesomeIcon icon={faCartShopping} />
-                  Cart
-                </Nav.Link>
+                <>
+                  <Nav.Link as={NavLink} to="/orders" className="text-white">
+                    Orders
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/cart" className="text-white">
+                    <FontAwesomeIcon icon={faCartShopping} />
+                    Cart
+                  </Nav.Link>
+                </>
 
                 {user && (
                   <Button
@@ -129,7 +148,11 @@ function Navigationbar() {
                           " "
                         )}
                       >
-                        <img src={user.userImg} alt="" className="w-100 rounded-circle" />
+                        <img
+                          src={user.userImg}
+                          alt=""
+                          className="w-100 rounded-circle"
+                        />
                       </div>
                     )}
                     {!user?.userImg && (
@@ -149,20 +172,101 @@ function Navigationbar() {
                 {user && (
                   <Offcanvas placement="end" show={show} onHide={handleClose}>
                     <Offcanvas.Header closeButton>
-                      <Offcanvas.Title>Hello CMP</Offcanvas.Title>
+                      <Offcanvas.Title>
+                        <h4>{user.userName}</h4>
+                      </Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                      <Nav.Link
-                        onClick={() => {
-                          localStorage.clear();
-                          setUser(null);
-                          handleClose();
-                        }}
-                        as={NavLink}
-                        to="/signin"
-                      >
-                        Logout
-                      </Nav.Link>
+                      {admin.isAdmin && (
+                        <>
+                          <Tab.Container
+                            id="list-group-tabs-example"
+                            defaultActiveKey="#link1"
+                          >
+                            <Row>
+                              <Col>
+                                <ListGroup>
+                                  <ListGroup.Item
+                                    as={NavLink}
+                                    action
+                                    to="/products"
+                                  >
+                                    Products
+                                  </ListGroup.Item>
+                                  <ListGroup.Item
+                                    as={NavLink}
+                                    action
+                                    to="/products/curd"
+                                  >
+                                    Create Product
+                                  </ListGroup.Item>
+                                  <ListGroup.Item
+                                    as={NavLink}
+                                    action
+                                    to="/categories"
+                                  >
+                                    Categories
+                                  </ListGroup.Item>
+                                  <ListGroup.Item
+                                    as={NavLink}
+                                    action
+                                    to="/history"
+                                  >
+                                    History
+                                  </ListGroup.Item>
+                                  <ListGroup.Item
+                                    onClick={() => {
+                                      localStorage.clear();
+                                      setUser(null);
+                                      setAdmin({
+                                        role: "user",
+                                        isAdmin: false,
+                                      });
+                                      handleClose();
+                                    }}
+                                    as={NavLink}
+                                    action
+                                    to="/signin"
+                                  >
+                                    Logout
+                                  </ListGroup.Item>
+                                </ListGroup>
+                              </Col>
+                            </Row>
+                          </Tab.Container>
+                        </>
+                      )}
+                      {!admin.isAdmin && (
+                        <>
+                          <Tab.Container
+                            id="list-group-tabs-example"
+                            defaultActiveKey="#link1"
+                          >
+                            <Row>
+                              <Col>
+                                <ListGroup>
+                                  <ListGroup.Item
+                                    onClick={() => {
+                                      localStorage.clear();
+                                      setUser(null);
+                                      setAdmin({
+                                        role: "user",
+                                        isAdmin: false,
+                                      });
+                                      handleClose();
+                                    }}
+                                    as={NavLink}
+                                    action
+                                    to="/signin"
+                                  >
+                                    Logout
+                                  </ListGroup.Item>
+                                </ListGroup>
+                              </Col>
+                            </Row>
+                          </Tab.Container>
+                        </>
+                      )}
                     </Offcanvas.Body>
                   </Offcanvas>
                 )}
