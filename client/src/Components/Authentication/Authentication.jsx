@@ -7,7 +7,7 @@ import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
 // ======= --- ======= <| React-Router-Dom |> ======= --- ======= //
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 // ======= --- ======= <| Component-Style |> ======= --- ======= //
 import Style from "./Authentication.module.scss";
@@ -46,6 +46,7 @@ function Authentication() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   // ======= --- ======= <| Initialization of gapi |> ======= --- ======= //
   useEffect(() => {
@@ -83,6 +84,7 @@ function Authentication() {
     startPassword: false,
     startConfirmPassword: false,
   });
+  let [query, setQuery] = useState("");
   let [waiting, setWaiting] = useState(false);
   let [passwordShown, setPasswordShown] = useState(false);
   let [result, setResult] = useState(false);
@@ -94,7 +96,9 @@ function Authentication() {
 
   useEffect(() => {
     SigninOrRegister();
+    setQuery(searchParams?.get("return") ? searchParams?.get("return") : "");
   }, [location]);
+  console.log(query);
 
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
@@ -155,7 +159,8 @@ function Authentication() {
       );
 
       if (res) {
-        navigate("/", { replace: true });
+        if (query !== "") navigate(query, { replace: true });
+        else navigate("/", { replace: true });
       }
     } else {
       await dispatch(
@@ -188,7 +193,8 @@ function Authentication() {
       );
 
       if (res) {
-        navigate("/", { replace: true });
+        if (query !== "") navigate(query, { replace: true });
+        else navigate("/", { replace: true });
       }
     } else {
       await dispatch(
@@ -218,7 +224,8 @@ function Authentication() {
     const token = res?.tokenId;
 
     await dispatch(googleAuthAction(profile, token));
-    navigate("/", { replace: true });
+    if (query !== "") navigate(query, { replace: true });
+    else navigate("/", { replace: true });
   };
 
   const responseGoogleFailure = async (error) => {

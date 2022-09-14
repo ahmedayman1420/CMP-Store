@@ -35,22 +35,22 @@ const isAuthorized = (endPoint) => {
             next();
           } else {
             res.status(StatusCodes.UNAUTHORIZED).json({
-              Message: "UNAUTHORIZED",
+              message: "UNAUTHORIZED",
             });
           }
         } else {
           res.status(StatusCodes.UNAUTHORIZED).json({
-            Message: "Invalid Token",
+            message: "Invalid Token",
           });
         }
       } else {
         res.status(StatusCodes.BAD_req).json({
-          Message: "Token is required",
+          message: "Token is required",
         });
       }
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        Message: error,
+        message: error,
       });
       console.log(error);
     }

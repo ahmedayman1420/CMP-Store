@@ -1,5 +1,6 @@
 // ======= --- ======= <| Actions Strings |> ======= --- ======= //
 import {
+  ERROR_CATEGORY,
   ERROR_RESET,
   Error_SIGNIN,
   ERROR_SIGNUP,
@@ -14,6 +15,9 @@ const errorReducer = (
       return { ...action.payload };
 
     case Error_SIGNIN:
+      return { ...action.payload };
+
+    case ERROR_CATEGORY:
       return { ...action.payload };
 
     case ERROR_RESET:

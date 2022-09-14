@@ -27,12 +27,23 @@ import jwt_decode from "jwt-decode";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+// ======= --- ======= <| React-Redux |> ======= --- ======= //
+import { useDispatch, useSelector } from "react-redux";
+
+// ======= --- ======= <| Actions |> ======= --- ======= //
+import {
+  resetSearchAction,
+  setSearchAction,
+} from "../../Redux/Actions/SearchActions";
+
 function Navigationbar() {
+  const dispatch = useDispatch();
   let location = useLocation();
 
   // ======= --- ======= <| Component states |> ======= --- ======= //
   let [user, setUser] = useState(null);
   let [showOrHide, setShowOrHider] = useState("d-none");
+  let [search, setSearch] = useState("");
   const [show, setShow] = useState(false);
   let [admin, setAdmin] = useState({ role: "user", isAdmin: false });
 
@@ -68,9 +79,14 @@ function Navigationbar() {
 
   useEffect(() => {
     Execute();
+    setSearch("");
+    dispatch(resetSearchAction());
   }, [location]);
-  // ======= --- ======= <| Here need to create useEffect function to check the user token when changing the location, or may be use protected route instead of that |> ======= --- ======= //
 
+  const handleSearch = (searchWord) => {
+    dispatch(setSearchAction(searchWord));
+  };
+  // ======= --- ======= <| Here need to create useEffect function to check the user token when changing the location, or may be use protected route instead of that |> ======= --- ======= //
   return (
     <>
       <Navbar
@@ -92,10 +108,15 @@ function Navigationbar() {
             <div className="col-md-8 offset-md-1">
               <Form className="d-flex">
                 <Form.Control
+                  onChange={async (e) => {
+                    await setSearch(e.target.value);
+                    handleSearch(e.target.value);
+                  }}
                   type="search"
                   placeholder="Search"
                   className={["me-2", Style.formControl].join(" ")}
                   aria-label="Search"
+                  value={search}
                 />
                 <Button variant="outline-warning">
                   <svg
@@ -196,7 +217,7 @@ function Navigationbar() {
                                   <ListGroup.Item
                                     as={NavLink}
                                     action
-                                    to="/products/curd"
+                                    to="/product/curd"
                                   >
                                     Create Product
                                   </ListGroup.Item>

@@ -7,6 +7,8 @@ import reducers from "../Reducers";
 
 const initialState = {
   error: { value: false, message: "", type: "" },
+  categories: [],
+  searchWord: "",
 };
 
 export const store = createStore(

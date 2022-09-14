@@ -21,13 +21,13 @@ const addCategory = async (req, res) => {
       const data = await newCategory.save();
 
       res.status(StatusCodes.CREATED).json({
-        Message: "Adding Category Success",
+        message: "Adding Category Success",
         payload: { category: newCategory },
       });
     } else {
       res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ Message: "Category is Already Found" });
+        .json({ message: "Category is Already Found" });
     }
   } catch (error) {
     console.log(error);
@@ -51,7 +51,7 @@ const editCategory = async (req, res) => {
     });
     if (isCategoryFound) {
       const oldCategory = await categories.findOne({ name, isDeleted: false });
-      if (!oldCategory) {
+      if (!oldCategory || oldCategory.id == isCategoryFound.id) {
         const data = await categories.findByIdAndUpdate(
           id,
           { name },
@@ -61,15 +61,15 @@ const editCategory = async (req, res) => {
         );
 
         res.status(StatusCodes.OK).json({
-          Message: "Editing Category Success",
+          message: "Editing Category Success",
           payload: { category: data },
         });
       } else {
         res
           .status(StatusCodes.BAD_REQUEST)
-          .json({ Message: "Category is Already Found" });
+          .json({ message: "Category is Already Found" });
       }
-    } else res.status(StatusCodes.BAD_REQUEST).json({ Message: "Invalid Id" });
+    } else res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid Id" });
   } catch (error) {
     console.log(error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
@@ -94,10 +94,10 @@ const deleteCategory = async (req, res) => {
       const data = await categories.findByIdAndDelete(id);
 
       res.status(StatusCodes.OK).json({
-        Message: "Deleting Category Success",
+        message: "Deleting Category Success",
         payload: { category: data },
       });
-    } else res.status(StatusCodes.BAD_REQUEST).json({ Message: "Invalid Id" });
+    } else res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid Id" });
   } catch (error) {
     console.log(error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
@@ -114,7 +114,7 @@ const getCategories = async (req, res) => {
     const data = await categories.find({});
 
     res.status(StatusCodes.OK).json({
-      Message: "Get Categories Success",
+      message: "Get Categories Success",
       payload: { categories: data },
     });
   } catch (error) {
