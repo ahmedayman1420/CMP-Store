@@ -3,6 +3,7 @@ const products = require("../model/product-model");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const { StatusCodes } = require("http-status-codes");
+const users = require("../../users/model/user-model");
 
 // ====== --- ====== > Product Methods < ====== --- ====== //
 
@@ -20,36 +21,40 @@ const createProduct = async (req, res) => {
       stock,
       brand,
       category,
-      images,
-      creator,
+      files,
     } = req.body;
 
-    const oldProduct = await products.findOne({ title, isDeleted: false });
-    if (!oldProduct) {
-      const newProduct = new products({
-        title,
-        price,
-        description,
+    const oldUser = await users.findOne({ email: req.decoded.email });
+    if (oldUser) {
+      const oldProduct = await products.findOne({ title, isDeleted: false });
+      if (!oldProduct) {
+        const newProduct = new products({
+          title,
+          price,
+          description,
 
-        discountPercentage,
-        stock,
-        brand,
+          discountPercentage,
+          stock,
+          brand,
 
-        category,
-        images,
-        creator,
-      });
+          category,
+          images: files,
+          creator: oldUser._id,
+        });
 
-      const data = await newProduct.save();
+        const data = await newProduct.save();
 
-      res.status(StatusCodes.CREATED).json({
-        Message: "Creating product success",
-        payload: { product: newProduct },
-      });
+        res.status(StatusCodes.CREATED).json({
+          message: "Creating product success",
+          payload: { product: newProduct },
+        });
+      } else {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Product is Already Found" });
+      }
     } else {
-      res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ Message: "Product is Already Found" });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "User Not Found" });
     }
   } catch (error) {
     console.log(error);
@@ -104,15 +109,15 @@ const editProduct = async (req, res) => {
         );
 
         res.status(StatusCodes.OK).json({
-          Message: "Editing product success",
+          message: "Editing product success",
           payload: { product: data },
         });
       } else
         res
           .status(StatusCodes.BAD_REQUEST)
-          .json({ Message: "Product is already found" });
+          .json({ message: "Product is already found" });
     } else {
-      res.status(StatusCodes.BAD_REQUEST).json({ Message: "Invalid Id" });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid Id" });
     }
   } catch (error) {
     console.log(error);
@@ -133,11 +138,11 @@ const deleteProduct = async (req, res) => {
       const data = await products.findByIdAndDelete(id);
 
       res.status(StatusCodes.OK).json({
-        Message: "Deleting product success",
+        message: "Deleting product success",
         payload: { product: data },
       });
     } else {
-      res.status(StatusCodes.BAD_REQUEST).json({ Message: "Invalid Id" });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid Id" });
     }
   } catch (error) {
     console.log(error);
@@ -173,7 +178,7 @@ const getProducts = async (req, res) => {
       .sort(sortOptions[Number(sort)]);
 
     res.status(StatusCodes.OK).json({
-      Message: "Getting products success",
+      message: "Getting products success",
       payload: { products: data },
     });
   } catch (error) {

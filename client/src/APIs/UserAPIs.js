@@ -13,7 +13,6 @@ const client = axios.create({
 export const googleSigninAPI = async (token) => {
   try {
     var decoded = jwt_decode(token);
-    console.log({ decoded });
     const res = await client.post(`google`, {
       email: decoded.email,
       name: decoded.name,

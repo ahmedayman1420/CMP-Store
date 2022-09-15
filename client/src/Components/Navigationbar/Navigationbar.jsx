@@ -81,7 +81,6 @@ function Navigationbar() {
 
   const refreshToken = async () => {
     let token = localStorage.getItem("CMPToken");
-    console.log("HERE");
     dispatch(refreshTokenAction(token));
 
     setTimeout(() => {

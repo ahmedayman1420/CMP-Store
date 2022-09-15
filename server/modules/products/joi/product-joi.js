@@ -17,9 +17,8 @@ const productJoi = {
         stock: joi.number().required(),
         brand: joi.string().required(),
 
-        images: joi.array().items(joi.string()).required(),
+        files: joi.array().items(joi.string()).required(),
         category: joi.string().required(),
-        creator: joi.string().required(),
       }),
     headers: joi
       .object()

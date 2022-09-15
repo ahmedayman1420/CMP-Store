@@ -12,6 +12,8 @@ import Card from "react-bootstrap/Card";
 
 // ======= --- ======= <| React-Redux |> ======= --- ======= //
 import { useDispatch, useSelector } from "react-redux";
+
+// ======= --- ======= <| Category-Actions |> ======= --- ======= //
 import {
   addCategoryAction,
   deleteCategoriesAction,

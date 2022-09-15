@@ -73,7 +73,6 @@ export const refreshTokenAction = (token) => async (dispatch) => {
     dispatch(unexpectedErrorAction(Error_SIGNIN, payload));
     return false;
   } else {
-    console.log(res.data.payload.token);
     await localStorage.setItem("CMPToken", res.data.payload.token);
 
     dispatch(errorResetAction());

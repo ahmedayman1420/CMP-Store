@@ -4,6 +4,8 @@ export const Error_SIGNIN = "Error_SIGNIN";
 
 export const ERROR_CATEGORY = "ERROR_CATEGORY";
 
+export const ERROR_PRODUCT = "ERROR_PRODUCT";
+
 export const ERROR_RESET = "ERROR_RESET";
 
 // ======= --- ======= <| Category-Actions |> ======= --- ======= //
@@ -15,3 +17,5 @@ export const EDIT_CATEGORY = "EDIT_CATEGORY";
 // ======= --- ======= <| Search-Actions |> ======= --- ======= //
 export const SET_SEARCH_WORD = "SET_SEARCH_WORD";
 export const RESET_SEARCH_WORD = "RESET_SEARCH_WORD";
+
+// ======= --- ======= <| Product-Actions |> ======= --- ======= //
