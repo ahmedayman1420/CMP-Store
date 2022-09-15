@@ -12,7 +12,7 @@ const categoryReducer = (state = [], action) => {
       return [...state, action.payload];
 
     case GET_CATEGORIES:
-      return [...state, ...action.payload];
+      return [...action.payload];
 
     case DELETE_CATEGORY:
       return state.filter((cat) => {

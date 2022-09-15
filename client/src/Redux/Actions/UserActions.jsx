@@ -1,5 +1,10 @@
 // ======= --- ======= <| APIs |> ======= --- ======= //
-import { googleSigninAPI, signInAPI, signUpAPI } from "../../APIs/UserAPIs";
+import {
+  googleSigninAPI,
+  refreshTokenAPI,
+  signInAPI,
+  signUpAPI,
+} from "../../APIs/UserAPIs";
 
 // ======= --- ======= <| Actions Strings |> ======= --- ======= //
 import { Error_SIGNIN, ERROR_SIGNUP } from "./ActionStrings";
@@ -51,6 +56,25 @@ export const signInAction = (user) => async (dispatch) => {
   } else {
     await localStorage.setItem("CMPToken", res.data.payload.token);
     await localStorage.setItem("CMPUser", res.data.payload.user.name);
+
+    dispatch(errorResetAction());
+    return true;
+  }
+};
+
+export const refreshTokenAction = (token) => async (dispatch) => {
+  const res = await refreshTokenAPI(token);
+  if (res?.data?.message !== "Refresh Token Success") {
+    let payload = {
+      value: true,
+      message: res.response.data.message,
+      type: "auth",
+    };
+    dispatch(unexpectedErrorAction(Error_SIGNIN, payload));
+    return false;
+  } else {
+    console.log(res.data.payload.token);
+    await localStorage.setItem("CMPToken", res.data.payload.token);
 
     dispatch(errorResetAction());
     return true;

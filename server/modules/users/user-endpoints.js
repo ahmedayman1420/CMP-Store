@@ -1,8 +1,8 @@
 // ====== --- ====== > User module endpoints < ====== --- ====== //
-// const updateUserPassword = "User:updateUserPassword";
+const REFRESH_TOKEN = "User:REFRESH_TOKEN";
 
 const userEndpoints = {
-    // updateUserPassword,
+  REFRESH_TOKEN,
 };
 
 // ====== --- ====== > Export user endpoints < ====== --- ====== //

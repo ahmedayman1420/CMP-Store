@@ -46,3 +46,21 @@ export const signInAPI = async (user) => {
     return error;
   }
 };
+
+export const refreshTokenAPI = async (token) => {
+  try {
+    const res = await client.post(
+      `token`,
+      {},
+      {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};

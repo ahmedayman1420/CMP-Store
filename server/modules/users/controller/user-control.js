@@ -23,9 +23,9 @@ const signUp = async (req, res) => {
         var token = jwt.sign(
           {
             data: { name: data.name, email: data.email, role: data.role },
-            exp: Math.floor(Date.now() / 1000) + 60 * 60,
           },
-          process.env.ENCRYPT_KEY
+          process.env.ENCRYPT_KEY,
+          { expiresIn: 60 * 60 }
         );
 
         res.status(StatusCodes.CREATED).json({
@@ -70,9 +70,9 @@ const signIn = async (req, res) => {
                   email: oldUser.email,
                   role: oldUser.role,
                 },
-                exp: Math.floor(cdate / 1000) + 60 * 60,
               },
-              process.env.ENCRYPT_KEY
+              process.env.ENCRYPT_KEY,
+              { expiresIn: 60 * 60 }
             );
             res.status(StatusCodes.OK).json({
               message: "Sign in Successfully",
@@ -110,9 +110,9 @@ const googleSignIn = async (req, res) => {
             email: oldUser.email,
             role: oldUser.role,
           },
-          exp: Math.floor(Date.now() / 1000) + 60 * 60,
         },
-        process.env.ENCRYPT_KEY
+        process.env.ENCRYPT_KEY,
+        { expiresIn: 60 * 60 }
       );
       res.status(StatusCodes.OK).json({
         message: "Sign in Successfully with Google",
@@ -126,9 +126,9 @@ const googleSignIn = async (req, res) => {
       var token = jwt.sign(
         {
           data: { name: data.name, email: data.email, role: data.role },
-          exp: Math.floor(Date.now() / 1000) + 60 * 60,
         },
-        process.env.ENCRYPT_KEY
+        process.env.ENCRYPT_KEY,
+        { expiresIn: 60 * 60 }
       );
 
       res.status(StatusCodes.CREATED).json({
@@ -142,9 +142,47 @@ const googleSignIn = async (req, res) => {
   }
 };
 
+/*
+//==// Refresh Token: is the logic of '/token' api that used to refresh  user token.
+the response of this function in success (Refresh Token Success), in failure (show error message).
+*/
+const refreshToken = async (req, res) => {
+  try {
+    let decoded = req.decoded;
+    let email = decoded.email;
+    const oldUser = await users.findOne({ email, isDeleted: false });
+    console.log({ decoded });
+    if (oldUser) {
+      var token = jwt.sign(
+        {
+          data: {
+            name: decoded.name,
+            email: decoded.email,
+            role: decoded.role,
+          },
+        },
+        process.env.ENCRYPT_KEY,
+        { expiresIn: 60 * 60 }
+      );
+
+      res.status(StatusCodes.CREATED).json({
+        message: "Refresh Token Success",
+        payload: { token },
+      });
+    } else {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Email is Not Found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  }
+};
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = {
   signUp,
   signIn,
   googleSignIn,
+  refreshToken,
 };

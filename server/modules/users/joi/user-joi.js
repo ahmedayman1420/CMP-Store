@@ -55,11 +55,7 @@ const userJoi = {
         name: joi.string().required(),
       }),
   },
-  updatePasswordSchema: {
-    body: joi.object().required().keys({
-      oldPassword: joi.string().required(),
-      newPassword: joi.string().required(),
-    }),
+  refreshTokenSchema: {
     headers: joi
       .object()
       .required()

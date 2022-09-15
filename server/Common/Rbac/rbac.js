@@ -2,10 +2,10 @@
 const Rbac = require("easy-rbac");
 const categoryEndpoints = require("../../modules/categories/category-endpoints");
 const productEndpoints = require("../../modules/products/product-endpoints");
+const userEndpoints = require("../../modules/users/user-endpoints");
 const roles = require("../Enum/roles");
-
 // ====== --- ====== > Roles policies < ====== --- ====== //
-const userPolicies = [];
+const userPolicies = [userEndpoints.REFRESH_TOKEN];
 
 const adminPolicies = [
   categoryEndpoints.addCategoryEndpoint,

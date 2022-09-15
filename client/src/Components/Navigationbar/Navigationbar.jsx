@@ -35,6 +35,7 @@ import {
   resetSearchAction,
   setSearchAction,
 } from "../../Redux/Actions/SearchActions";
+import { refreshTokenAction } from "../../Redux/Actions/UserActions";
 
 function Navigationbar() {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ function Navigationbar() {
   let [search, setSearch] = useState("");
   const [show, setShow] = useState(false);
   let [admin, setAdmin] = useState({ role: "user", isAdmin: false });
+  let [start, setStart] = useState(true);
 
   // ======= --- ======= <| Component Functinos |> ======= --- ======= //
   const handleClose = () => setShow(false);
@@ -77,10 +79,26 @@ function Navigationbar() {
     await getUserFromLocalstorage();
   };
 
+  const refreshToken = async () => {
+    let token = localStorage.getItem("CMPToken");
+    console.log("HERE");
+    dispatch(refreshTokenAction(token));
+
+    setTimeout(() => {
+      refreshToken(token);
+    }, 1000 * 60 * 50);
+  };
+
   useEffect(() => {
     Execute();
     setSearch("");
     dispatch(resetSearchAction());
+
+    let token = localStorage.getItem("CMPToken");
+    if (token && start) {
+      setStart(false);
+      refreshToken(token);
+    }
   }, [location]);
 
   const handleSearch = (searchWord) => {

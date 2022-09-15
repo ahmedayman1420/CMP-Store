@@ -34,19 +34,20 @@ router.post(
   userFunctions.signIn
 );
 
-// signin api
+// google api
 router.post(
   "/google",
   validateRequest(userSchemas.googleSigninSchema),
   userFunctions.googleSignIn
 );
 
-// update api
-// router.post(
-//   "/user-update-password",
-//   validateRequest(userSchemas.updatePasswordSchema),
-//   isAuthorized(userEndpoints.updateUserPassword),
-//   userFunctions.updatePassword
-// );
+// refresh token api
+router.post(
+  "/token",
+  validateRequest(userSchemas.refreshTokenSchema),
+  isAuthorized(userEndpoints.REFRESH_TOKEN),
+  userFunctions.refreshToken
+);
+
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = router;
