@@ -169,13 +169,23 @@ const getProducts = async (req, res) => {
 
     let skip = (Number(page) - 1) * limit;
 
-    const data = await products
-      .find({ isDeleted: false, category: filter })
-      .populate("creator")
-      .populate("category")
-      .limit(limit)
-      .skip(skip)
-      .sort(sortOptions[Number(sort)]);
+    if (filter != "null") {
+      var data = await products
+        .find({ isDeleted: false, category: filter })
+        .populate("creator")
+        .populate("category")
+        .limit(limit)
+        .skip(skip)
+        .sort(sortOptions[Number(sort)]);
+    } else {
+      var data = await products
+        .find({ isDeleted: false })
+        .populate("creator")
+        .populate("category")
+        .limit(limit)
+        .skip(skip)
+        .sort(sortOptions[Number(sort)]);
+    }
 
     res.status(StatusCodes.OK).json({
       message: "Getting products success",

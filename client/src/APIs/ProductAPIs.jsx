@@ -23,3 +23,15 @@ export const craeteProductAPI = async (product, token) => {
     return error;
   }
 };
+
+export const getProductsAPI = async (page, sort, filter) => {
+  try {
+    const res = await client.get(
+      `product/all?page=${page}&sort=${sort}&filter=${filter}`
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};

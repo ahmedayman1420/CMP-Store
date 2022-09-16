@@ -232,8 +232,9 @@ function CreateProduct() {
                 />
                 {!validInput.title && !validInput.startTitle && (
                   <Alert variant="primary" className="mt-3">
-                    Minimum two characters, maximum 30 characters, no numbers or
-                    special characters
+                    Must start with character
+                    {/* Minimum two characters, maximum 30 characters, no numbers or
+                    special characters */}
                   </Alert>
                 )}
               </Form.Group>
@@ -285,8 +286,9 @@ function CreateProduct() {
                 />
                 {!validInput.description && !validInput.startDescription && (
                   <Alert variant="primary" className="mt-3">
-                    Minimum two characters, maximum 100 characters, no numbers
-                    or special characters
+                    Must start with character
+                    {/* Minimum two characters, maximum 100 characters, no numbers
+                    or special characters */}
                   </Alert>
                 )}
               </Form.Group>
@@ -366,8 +368,9 @@ function CreateProduct() {
                 />
                 {!validInput.brand && !validInput.startBrand && (
                   <Alert variant="primary" className="mt-3">
-                    Minimum two characters, maximum 30 characters, no numbers or
-                    special characters
+                    Must start with character
+                    {/* Minimum two characters, maximum 30 characters, no numbers or
+                    special characters */}
                   </Alert>
                 )}
               </Form.Group>
@@ -400,8 +403,9 @@ function CreateProduct() {
                 </Form.Select>
                 {!validInput.category && !validInput.startCategory && (
                   <Alert variant="primary" className="mt-3">
-                    Minimum two characters, maximum 30 characters, no numbers or
-                    special characters
+                    Select a category
+                    {/* Minimum two characters, maximum 30 characters, no numbers or
+                    special characters */}
                   </Alert>
                 )}
               </Form.Group>

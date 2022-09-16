@@ -284,6 +284,13 @@ function Navigationbar() {
                               <Col>
                                 <ListGroup>
                                   <ListGroup.Item
+                                    as={NavLink}
+                                    action
+                                    to="/products"
+                                  >
+                                    Products
+                                  </ListGroup.Item>
+                                  <ListGroup.Item
                                     onClick={() => {
                                       localStorage.clear();
                                       setUser(null);

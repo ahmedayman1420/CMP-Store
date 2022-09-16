@@ -27,13 +27,13 @@ function App() {
         <Route path="/" exact element={<Home />} />
 
         <Route element={<ProtectedRouteUser />}>
+          <Route path="/products" exact element={<Products />} />
           <Route path="/orders" exact element={<Orders />} />
           <Route path="/cart" exact element={<Cart />} />
         </Route>
 
         <Route element={<ProtectedRouteAdmin />}>
           <Route path="/product/curd" exact element={<CreateProduct />} />
-          <Route path="/products" exact element={<Products />} />
           <Route path="/categories" exact element={<Categories />} />
           <Route path="/history" exact element={<History />} />
         </Route>

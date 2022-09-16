@@ -2,7 +2,8 @@
 
 export const validTitle = new RegExp(
   //Minimum two characters, Maximum 30 characters, no number and one special character;
-  /^[a-zA-Z ]{2,30}$/
+  // /^[a-zA-Z ]{2,30}$/
+  /^(.|\s)*[a-zA-Z]+(.|\s)*$/
 );
 
 export const validPrice = new RegExp(
@@ -12,7 +13,8 @@ export const validPrice = new RegExp(
 
 export const validDescription = new RegExp(
   //Minimum two characters, Maximum 100 characters, no number and one special character;
-  /^[a-zA-Z ]{2,100}$/
+  // /^[a-zA-Z ]{2,100}$/
+  /^(.|\s)*[a-zA-Z]+(.|\s)*$/
 );
 
 export const validStock = new RegExp(
@@ -22,15 +24,18 @@ export const validStock = new RegExp(
 
 export const validBrand = new RegExp(
   //Minimum two characters, Maximum 30 characters, no number and one special character;
-  /^[a-zA-Z ]{2,30}$/
+  // /^[a-zA-Z ]{2,30}$/
+  /^(.|\s)*[a-zA-Z]+(.|\s)*$/
 );
 
 export const validCategory = new RegExp(
   //Minimum two characters, Maximum 30 characters, no number and one special character;
-  /^[a-zA-Z ]{2,30}$/
+  // /^[a-zA-Z ]{2,30}$/
+  /^(.|\s)*[a-zA-Z]+(.|\s)*$/
 );
 
 export const validDiscountPercentage = new RegExp(
   // Valid Discount Percentage
-  /^[1-9][0-9]?$|^100$/
+  // /^[1-9][0-9]?$|^100$/
+  /^(?=.*\d)\d{0,2}(?:\.\d{0,2})?$/
 );

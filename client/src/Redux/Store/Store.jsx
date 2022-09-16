@@ -9,6 +9,7 @@ const initialState = {
   error: { value: false, message: "", type: "" },
   categories: [],
   searchWord: "",
+  products: [],
 };
 
 export const store = createStore(
