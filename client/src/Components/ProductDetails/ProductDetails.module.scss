@@ -10,6 +10,7 @@
   position: absolute;
   top: 2%;
   right: 5%;
+z-index: 9999;
 
   text-align: center;
   color: white;
@@ -29,4 +30,14 @@
   border-color: #f3ce71 !important;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
     0 0 8px rgba(243, 206, 113, 0.6) !important;
+}
+
+.stock {
+  background-color: #099970 !important;
+  border: #05523c solid 1px !important;
+}
+
+.outstock {
+  background-color: #b51b47 !important;
+  border: #590a21 solid 1px !important;
 }

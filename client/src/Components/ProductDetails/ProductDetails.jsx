@@ -15,10 +15,9 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
 
 // ======= --- ======= <| React-Router-Dom |> ======= --- ======= //
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, } from "react-router-dom";
 
 // ======= --- ======= <| React-Redux |> ======= --- ======= //
 import { useDispatch, useSelector } from "react-redux";
@@ -38,13 +37,14 @@ function ProductDetails() {
 
   // ======= --- ======= <| Component-States |> ======= --- ======= //
   let products = useSelector((state) => state.products);
-  let [admin, setAdmin] = useState({ role: "user", isAdmin: false });
   let [waiting, setWaiting] = useState(false);
   let [imgIndex, setImgIndex] = useState(0);
   let [productId, setProductId] = useState("");
   let [product, setProduct] = useState({});
+  let [admin, setAdmin] = useState({ role: "user", isAdmin: false });
 
   // ======= --- ======= <| Component-Functions |> ======= --- ======= //
+
   const checkIsAdmin = async () => {
     let token = localStorage.getItem("CMPToken");
     let decoded = await jwt_decode(token);
@@ -78,10 +78,10 @@ function ProductDetails() {
     if (!res) {
       setProduct(await dispatch(getProductByIdAction(params.id)));
     }
-    checkIsAdmin();
     setWaiting(false);
   };
   useEffect(() => {
+    checkIsAdmin();
     excute();
   }, []);
 
@@ -128,7 +128,7 @@ function ProductDetails() {
                     ""
                   )}
                   {/* // ======= --- ======= <| Image |> ======= --- ======= // */}
-                  <div className="row">
+                  <div className={["row"].join(" ")}>
                     <div className="col-md-3">
                       <div className="d-flex flex-column">
                         {product.images.map((val, i) => {
@@ -247,27 +247,91 @@ function ProductDetails() {
                     )}
                     {/* // ======= --- ======= <| Stock |> ======= --- ======= // */}
                     {product.stock > 0 ? (
-                      <Card.Text
-                        style={{
-                          padding: "10px",
-                          backgroundColor: "#099970",
-                          borderRadius: "10px",
-                          width: "fit-content",
-                        }}
-                      >
-                        In stock
-                      </Card.Text>
+                      <>
+                        <Card.Text>
+                          <Button
+                            className={Style.stock}
+                            style={{
+                              padding: "10px",
+                              width: "fit-content",
+                              marginRight: "10px",
+                            }}
+                            disabled={true}
+                          >
+                            In stock
+                          </Button>
+                          {admin.isAdmin && (
+                            <>
+                              <Button
+                                variant="warning"
+                                className=""
+                                style={{
+                                  padding: "10px",
+                                  marginRight: "10px",
+                                  color: "#fff",
+                                }}
+                                onClick={() => {
+                                  navigate(`/product/curd?id=${product._id}`);
+                                }}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                variant="danger"
+                                className=""
+                                style={{
+                                  padding: "10px",
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </>
+                          )}
+                        </Card.Text>
+                      </>
                     ) : (
-                      <Card.Text
-                        style={{
-                          padding: "10px",
-                          backgroundColor: "#b51b47",
-                          borderRadius: "10px",
-                          width: "fit-content",
-                        }}
-                      >
-                        Out of stock
-                      </Card.Text>
+                      <>
+                        <Card.Text>
+                          <Button
+                            className={Style.outstock}
+                            style={{
+                              padding: "10px",
+                              width: "fit-content",
+                              marginRight: "10px",
+                            }}
+                            disabled={true}
+                          >
+                            Out of stock
+                          </Button>
+                          {admin.isAdmin && (
+                            <>
+                              <Button
+                                variant="warning"
+                                className=""
+                                style={{
+                                  padding: "10px",
+                                  marginRight: "10px",
+                                  color: "#fff",
+                                }}
+                                onClick={() => {
+                                  navigate(`/product/curd?id=${product._id}`);
+                                }}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                variant="danger"
+                                className=""
+                                style={{
+                                  padding: "10px",
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </>
+                          )}
+                        </Card.Text>
+                      </>
                     )}
 
                     {/* // ======= --- ======= <| Free-Shipping  |> ======= --- ======= // */}

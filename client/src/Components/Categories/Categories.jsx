@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import Card from "react-bootstrap/Card";
+import Modal from "react-bootstrap/Modal";
 
 // ======= --- ======= <| React-Redux |> ======= --- ======= //
 import { useDispatch, useSelector } from "react-redux";
@@ -32,12 +33,17 @@ function Categories() {
   let [editId, setEditId] = useState("");
   let [waiting, setWaiting] = useState(false);
   let [deleteState, setDeleteState] = useState(false);
+  let [deleteId, setDeleteId] = useState("");
   let [edit, setEdit] = useState(false);
   let error = useSelector((state) => state.error);
   let categories = useSelector((state) => state.categories);
   let searchWord = useSelector((state) => state.searchWord);
+  const [show, setShow] = useState(false);
 
   // ======= --- ======= <| Component-Functions |> ======= --- ======= //
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const validateCategory = (val) => {
     const validCategory = new RegExp(
       //Minimum two characters, Maximum 30 characters, no number and one special character;
@@ -110,6 +116,31 @@ function Categories() {
   return (
     <>
       {/* // ======= --- ======= <|======|> ======= --- ======= // */}
+      {/* // ======= --- ======= <|Modal|> ======= --- ======= // */}
+      {/* // ======= --- ======= <|======|> ======= --- ======= // */}
+      <Modal className={Style.modelCan} show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            variant="danger"
+            onClick={async (e) => {
+              await deleteCategory(e, deleteId);
+              handleClose();
+            }}
+            disabled={(waiting && deleteState) || edit}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* // ======= --- ======= <|======|> ======= --- ======= // */}
       {/* // ======= --- ======= <|Category-Form|> ======= --- ======= // */}
       {/* // ======= --- ======= <|======|> ======= --- ======= // */}
 
@@ -169,7 +200,8 @@ function Categories() {
                         <Button
                           variant="danger"
                           onClick={(e) => {
-                            deleteCategory(e, cat._id);
+                            setDeleteId(cat._id);
+                            handleShow();
                           }}
                           disabled={(waiting && deleteState) || edit}
                         >

@@ -172,19 +172,19 @@ const getProducts = async (req, res) => {
     if (filter != "null") {
       var data = await products
         .find({ isDeleted: false, category: filter })
-        .populate("creator")
-        .populate("category")
         .limit(limit)
         .skip(skip)
-        .sort(sortOptions[Number(sort)]);
+        .sort(sortOptions[Number(sort)])
+        .populate("creator")
+        .populate("category");
     } else {
       var data = await products
         .find({ isDeleted: false })
-        .populate("creator")
-        .populate("category")
         .limit(limit)
         .skip(skip)
-        .sort(sortOptions[Number(sort)]);
+        .sort(sortOptions[Number(sort)])
+        .populate("creator")
+        .populate("category");
     }
 
     res.status(StatusCodes.OK).json({
@@ -205,7 +205,11 @@ const getProductById = async (req, res) => {
   try {
     let { id } = req.params;
 
-    const oldProduct = await products.findOne({ _id: id, isDeleted: false });
+    const oldProduct = await products
+      .findOne({ _id: id, isDeleted: false })
+      .populate("creator")
+      .populate("category");
+      
     if (oldProduct) {
       res.status(StatusCodes.OK).json({
         message: "Getting product success",

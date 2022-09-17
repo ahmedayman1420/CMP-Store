@@ -98,7 +98,6 @@ function Authentication() {
     SigninOrRegister();
     setQuery(searchParams?.get("return") ? searchParams?.get("return") : "");
   }, [location]);
-  console.log(query);
 
   const togglePassword = () => {
     setPasswordShown(!passwordShown);

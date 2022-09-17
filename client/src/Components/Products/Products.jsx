@@ -33,7 +33,6 @@ function Products() {
 
   // ======= --- ======= <| Component-States |> ======= --- ======= //
   let products = useSelector((state) => state.products);
-  let [admin, setAdmin] = useState({ role: "user", isAdmin: false });
   let [waiting, setWaiting] = useState(false);
 
   // ======= --- ======= <| Component-Functions |> ======= --- ======= //
@@ -44,17 +43,8 @@ function Products() {
     setWaiting(false);
   };
 
-  const checkIsAdmin = async () => {
-    let token = localStorage.getItem("CMPToken");
-    let decoded = await jwt_decode(token);
-    if (decoded.data.role === "admin" || decoded.data.role === "superAdmin") {
-      setAdmin({ role: decoded.data.role, isAdmin: true });
-    }
-  };
-
   useEffect(() => {
     getProduct();
-    checkIsAdmin();
   }, []);
 
   console.log(products);
@@ -217,24 +207,13 @@ function Products() {
                         {/* // ======= --- ======= <| BTN  |> ======= --- ======= // */}
                         <Button
                           variant="primary"
-                          style={{ marginRight: "10px" }}
+                          className="w-100"
                           onClick={() => {
                             navigate(`/product/details/${product._id}`);
                           }}
                         >
                           View
                         </Button>
-                        {admin.isAdmin && (
-                          <>
-                            <Button
-                              variant="warning"
-                              style={{ marginRight: "10px" }}
-                            >
-                              Edit
-                            </Button>
-                            <Button variant="danger">Delete</Button>
-                          </>
-                        )}
                       </Card.Body>
                     </div>
                   </div>
