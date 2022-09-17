@@ -1,0 +1,21 @@
+.cardImg:hover {
+  cursor: pointer;
+}
+
+.imgCan {
+  position: relative;
+}
+
+.sale {
+  position: absolute;
+  top: 2%;
+  right: 5%;
+
+  text-align: center;
+  color: white;
+  background-color: #da5555;
+
+  width: 50px;
+  height: 30px;
+  border-radius: 10px;
+}

@@ -15,6 +15,7 @@ import Categories from "./Components/Categories/Categories";
 import History from "./Components/History/History";
 import ProtectedRouteAdmin from "./Components/ProtectedRoute/ProtectedRouteAdmin";
 import ProtectedRouteUser from "./Components/ProtectedRoute/ProtectedRouteUser";
+import ProductDetails from "./Components/ProductDetails/ProductDetails";
 
 function App() {
   return (
@@ -25,9 +26,10 @@ function App() {
         <Route path="/signin" exact element={<Authentication />} />
 
         <Route path="/" exact element={<Home />} />
+        <Route path="/product/details/:id" exact element={<ProductDetails />} />
+        <Route path="/products" exact element={<Products />} />
 
         <Route element={<ProtectedRouteUser />}>
-          <Route path="/products" exact element={<Products />} />
           <Route path="/orders" exact element={<Orders />} />
           <Route path="/cart" exact element={<Cart />} />
         </Route>

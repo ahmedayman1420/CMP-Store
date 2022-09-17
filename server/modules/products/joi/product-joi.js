@@ -78,6 +78,12 @@ const productJoi = {
       sort: joi.number().required(),
     }),
   },
+
+  getProductSchema: {
+    params: joi.object().required().keys({
+      id: joi.string().required(),
+    }),
+  },
 };
 
 /* ============= /// <==> Exports User Joi Validations <==> /// ============= */

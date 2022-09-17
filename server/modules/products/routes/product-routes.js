@@ -39,5 +39,12 @@ router.get(
   validateRequest(productSchemas.getProductsSchema),
   productFunctions.getProducts
 );
+
+// get product by id api
+router.get(
+  "/product/get/:id",
+  validateRequest(productSchemas.getProductSchema),
+  productFunctions.getProductById
+);
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = router;

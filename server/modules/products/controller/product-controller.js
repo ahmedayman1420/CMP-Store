@@ -126,7 +126,7 @@ const editProduct = async (req, res) => {
 };
 
 /*
-//==// deleteProduct: is the logic of '/product/delete/:id' api that used to edit product.
+//==// deleteProduct: is the logic of '/product/delete/:id' api that used to delete product.
 the response of this function in success (Deleting product success), in failure (show error message).
 */
 const deleteProduct = async (req, res) => {
@@ -165,7 +165,7 @@ const getProducts = async (req, res) => {
       { _id: -1 },
     ];
 
-    const limit = 10;
+    const limit = 1;
 
     let skip = (Number(page) - 1) * limit;
 
@@ -196,10 +196,34 @@ const getProducts = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
   }
 };
+
+/*
+//==// getProductById: is the logic of '/product/get/:id' api that used to get specific product.
+the response of this function in success (Getting product success), in failure (show error message).
+*/
+const getProductById = async (req, res) => {
+  try {
+    let { id } = req.params;
+
+    const oldProduct = await products.findOne({ _id: id, isDeleted: false });
+    if (oldProduct) {
+      res.status(StatusCodes.OK).json({
+        message: "Getting product success",
+        payload: { product: oldProduct },
+      });
+    } else {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid Id" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  }
+};
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = {
   createProduct,
   editProduct,
   deleteProduct,
   getProducts,
+  getProductById,
 };

@@ -35,3 +35,13 @@ export const getProductsAPI = async (page, sort, filter) => {
     return error;
   }
 };
+
+export const getProductByIdAPI = async (id) => {
+  try {
+    const res = await client.get(`product/get/${id}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};

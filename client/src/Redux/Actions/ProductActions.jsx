@@ -1,5 +1,9 @@
 // ======= --- ======= <| APIs |> ======= --- ======= //
-import { craeteProductAPI, getProductsAPI } from "../../APIs/ProductAPIs";
+import {
+  craeteProductAPI,
+  getProductByIdAPI,
+  getProductsAPI,
+} from "../../APIs/ProductAPIs";
 
 // ======= --- ======= <| Actions Strings |> ======= --- ======= //
 import { CREATE_PRODUCT, ERROR_PRODUCT, GET_PRODUCTS } from "./ActionStrings";
@@ -48,5 +52,21 @@ export const getProductsAction = (page, sort, filter) => async (dispatch) => {
     });
     dispatch(errorResetAction());
     return true;
+  }
+};
+
+export const getProductByIdAction = (id) => async (dispatch) => {
+  const res = await getProductByIdAPI(id);
+  if (res?.data?.message !== "Getting product success") {
+    let payload = {
+      value: true,
+      message: res.response.data.message,
+      type: "product",
+    };
+    dispatch(unexpectedErrorAction(ERROR_PRODUCT, payload));
+    return false;
+  } else {
+    let payload = res.data.payload.product;
+    return payload;
   }
 };
