@@ -44,7 +44,6 @@ const productJoi = {
 
         images: joi.array().items(joi.string()).required(),
         category: joi.string().required(),
-        creator: joi.string().required(),
       }),
     params: joi.object().required().keys({
       id: joi.string().required(),

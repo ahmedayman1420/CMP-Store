@@ -77,48 +77,50 @@ const editProduct = async (req, res) => {
       brand,
       category,
       images,
-      creator,
     } = req.body;
 
     let { id } = req.params;
 
-    const oldProduct = await products.findOne({ _id: id, isDeleted: false });
-    if (oldProduct) {
-      const isProductFound = await products.findOne({
-        title,
-        isDeleted: false,
-      });
-
-      if (!isProductFound) {
-        const data = await products.findByIdAndUpdate(
-          id,
-          {
-            title,
-            price,
-            description,
-            discountPercentage,
-            stock,
-            brand,
-            category,
-            images,
-            creator,
-          },
-          {
-            new: true,
-          }
-        );
-
-        res.status(StatusCodes.OK).json({
-          message: "Editing product success",
-          payload: { product: data },
+    const oldUser = await users.findOne({ email: req.decoded.email });
+    if (oldUser) {
+      const oldProduct = await products.findOne({ _id: id, isDeleted: false });
+      if (oldProduct) {
+        const isProductFound = await products.findOne({
+          title,
+          isDeleted: false,
         });
-      } else
-        res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ message: "Product is already found" });
-    } else {
-      res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid Id" });
-    }
+
+        if (!isProductFound) {
+          const data = await products.findByIdAndUpdate(
+            id,
+            {
+              title,
+              price,
+              description,
+              discountPercentage,
+              stock,
+              brand,
+              category,
+              images,
+            },
+            {
+              new: true,
+            }
+          );
+
+          res.status(StatusCodes.OK).json({
+            message: "Editing product success",
+            payload: { product: data },
+          });
+        } else
+          res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ message: "Product is already found" });
+      } else {
+        res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid Id" });
+      }
+    } else
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "User Not found" });
   } catch (error) {
     console.log(error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
@@ -165,7 +167,7 @@ const getProducts = async (req, res) => {
       { _id: -1 },
     ];
 
-    const limit = 1;
+    const limit = 10;
 
     let skip = (Number(page) - 1) * limit;
 
@@ -180,8 +182,8 @@ const getProducts = async (req, res) => {
     } else {
       var data = await products
         .find({ isDeleted: false })
-        .limit(limit)
         .skip(skip)
+        .limit(limit)
         .sort(sortOptions[Number(sort)])
         .populate("creator")
         .populate("category");
@@ -209,7 +211,7 @@ const getProductById = async (req, res) => {
       .findOne({ _id: id, isDeleted: false })
       .populate("creator")
       .populate("category");
-      
+
     if (oldProduct) {
       res.status(StatusCodes.OK).json({
         message: "Getting product success",

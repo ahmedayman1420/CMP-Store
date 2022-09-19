@@ -20,7 +20,15 @@ const userSchema = mongoose.Schema(
 
     password: { type: String, required: true },
 
-    cart: { type: Array, default: [] },
+    cart: {
+      type: [
+        {
+          id: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      default: [],
+    },
 
     role: { type: String, default: "user" },
 

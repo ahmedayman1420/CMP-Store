@@ -15,9 +15,10 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 
 // ======= --- ======= <| React-Router-Dom |> ======= --- ======= //
-import { useParams, useNavigate, } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 // ======= --- ======= <| React-Redux |> ======= --- ======= //
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +27,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faHollowStar } from "@fortawesome/free-regular-svg-icons";
-import { getProductByIdAction } from "../../Redux/Actions/ProductActions";
+import {
+  deleteProductAction,
+  getProductByIdAction,
+} from "../../Redux/Actions/ProductActions";
 
 // ======= --- ======= <| Component |> ======= --- ======= //
 function ProductDetails() {
@@ -42,9 +46,13 @@ function ProductDetails() {
   let [productId, setProductId] = useState("");
   let [product, setProduct] = useState({});
   let [admin, setAdmin] = useState({ role: "user", isAdmin: false });
+  const [show, setShow] = useState(false);
+  let [deleteId, setDeleteId] = useState("");
 
   // ======= --- ======= <| Component-Functions |> ======= --- ======= //
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const checkIsAdmin = async () => {
     let token = localStorage.getItem("CMPToken");
     let decoded = await jwt_decode(token);
@@ -85,6 +93,14 @@ function ProductDetails() {
     excute();
   }, []);
 
+  const handleDeleteProduct = async (e) => {
+    e.preventDefault();
+    setWaiting(true);
+    let token = await localStorage.getItem("CMPToken");
+    await dispatch(deleteProductAction(deleteId, token));
+    setWaiting(false);
+    navigate("/products");
+  };
   console.log({ product });
 
   // ======= --- ======= <| Component-JSX |> ======= --- ======= //
@@ -112,6 +128,25 @@ function ProductDetails() {
       {!waiting && !error.value && Object.keys(product).length !== 0 && (
         <div className="my-5">
           <div className="container mt-5">
+            <Modal
+              show={show}
+              onHide={handleClose}
+              backdrop="static"
+              keyboard={false}
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Delete product</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>Are you sure !</Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+                <Button variant="danger" onClick={handleDeleteProduct}>
+                  Delete
+                </Button>
+              </Modal.Footer>
+            </Modal>
             <Card key={product._id} className="mt-3">
               <div className="row">
                 <div className={["col-md-4", Style.imgCan].join(" ")}>
@@ -129,7 +164,7 @@ function ProductDetails() {
                   )}
                   {/* // ======= --- ======= <| Image |> ======= --- ======= // */}
                   <div className={["row"].join(" ")}>
-                    <div className="col-md-3">
+                    <div className="col-md-3 col-2">
                       <div className="d-flex flex-column">
                         {product.images.map((val, i) => {
                           return (
@@ -155,7 +190,7 @@ function ProductDetails() {
                         })}
                       </div>
                     </div>
-                    <div className="col-md-9">
+                    <div className="col-md-9 col-8">
                       <ReactImageMagnify
                         {...{
                           smallImage: {
@@ -281,6 +316,10 @@ function ProductDetails() {
                                 className=""
                                 style={{
                                   padding: "10px",
+                                }}
+                                onClick={() => {
+                                  handleShow();
+                                  setDeleteId(product._id);
                                 }}
                               >
                                 Delete

@@ -5,7 +5,11 @@ const productEndpoints = require("../../modules/products/product-endpoints");
 const userEndpoints = require("../../modules/users/user-endpoints");
 const roles = require("../Enum/roles");
 // ====== --- ====== > Roles policies < ====== --- ====== //
-const userPolicies = [userEndpoints.REFRESH_TOKEN];
+const userPolicies = [
+  userEndpoints.REFRESH_TOKEN,
+  userEndpoints.ADD_TO_CART,
+  userEndpoints.GET_CART,
+];
 
 const adminPolicies = [
   categoryEndpoints.addCategoryEndpoint,

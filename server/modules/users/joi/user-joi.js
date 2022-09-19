@@ -64,6 +64,27 @@ const userJoi = {
       })
       .options({ allowUnknown: true }),
   },
+  addToCartSchema: {
+    body: joi.object().required().keys({
+      product: joi.object().required(),
+    }),
+    headers: joi
+      .object()
+      .required()
+      .keys({
+        authorization: joi.string().required(),
+      })
+      .options({ allowUnknown: true }),
+  },
+  getCartSchema: {
+    headers: joi
+      .object()
+      .required()
+      .keys({
+        authorization: joi.string().required(),
+      })
+      .options({ allowUnknown: true }),
+  },
 };
 
 /* ============= /// <==> Exports User Joi Validations <==> /// ============= */

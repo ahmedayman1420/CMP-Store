@@ -49,5 +49,20 @@ router.post(
   userFunctions.refreshToken
 );
 
+// add to cart api
+router.post(
+  "/cart/add",
+  validateRequest(userSchemas.addToCartSchema),
+  isAuthorized(userEndpoints.ADD_TO_CART),
+  userFunctions.addToCart
+);
+
+// get cart api
+router.get(
+  "/cart/get",
+  validateRequest(userSchemas.getCartSchema),
+  isAuthorized(userEndpoints.GET_CART),
+  userFunctions.getCart
+);
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = router;

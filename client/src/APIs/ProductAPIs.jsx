@@ -45,3 +45,44 @@ export const getProductByIdAPI = async (id) => {
     return error;
   }
 };
+
+export const editProductAPI = async (product, id, token) => {
+  try {
+    const res = await client.put(
+      `product/edit/${id}`,
+      {
+        title: product.title,
+        price: product.price,
+        description: product.description,
+        discountPercentage: product.discountPercentage,
+        stock: product.stock,
+        brand: product.brand,
+        category: product.category,
+        images: product.images,
+      },
+      {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+export const deleteCategoryAPI = async (id, token) => {
+  try {
+    const res = await client.delete(`product/delete/${id}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};

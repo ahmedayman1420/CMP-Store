@@ -1,9 +1,19 @@
+// ======= --- ======= <| React |> ======= --- ======= //
 import React from "react";
+
+// ======= --- ======= <| React-Bootstrap |> ======= --- ======= //
+import Card from "react-bootstrap/Card";
 
 function Cart() {
   return (
     <>
-      <h1>Cart</h1>
+      <Card>
+        <Card.Body>
+          <Card.Title className="text-center">
+            <h2>Cart is empty</h2>
+          </Card.Title>
+        </Card.Body>
+      </Card>
     </>
   );
 }

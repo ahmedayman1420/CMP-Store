@@ -27,6 +27,7 @@ import {
 } from "./ProductRegex";
 import {
   creatProductAction,
+  editProductdAction,
   getProductByIdAction,
 } from "../../Redux/Actions/ProductActions";
 
@@ -171,38 +172,40 @@ function CreateProduct() {
     let token = localStorage.getItem("CMPToken");
     let res = await dispatch(creatProductAction(product, token));
 
-    e.target.files.value = "";
+    if (res) {
+      e.target.files.value = "";
 
-    setProduct({
-      title: "",
-      price: "",
-      description: "",
-      stock: "",
-      discountPercentage: "",
-      brand: "",
-      category: "",
-      files: [],
-    });
+      setProduct({
+        title: "",
+        price: "",
+        description: "",
+        stock: "",
+        discountPercentage: "",
+        brand: "",
+        category: "",
+        files: [],
+      });
 
-    setValidInput({
-      title: false,
-      price: false,
-      description: false,
-      stock: false,
-      discountPercentage: false,
-      brand: false,
-      category: false,
-      files: false,
+      setValidInput({
+        title: false,
+        price: false,
+        description: false,
+        stock: false,
+        discountPercentage: false,
+        brand: false,
+        category: false,
+        files: false,
 
-      startTitle: true,
-      startPrice: true,
-      startDescription: true,
-      startStock: true,
-      startDiscountPercentage: true,
-      startBrand: true,
-      startCategory: true,
-      startFiles: true,
-    });
+        startTitle: true,
+        startPrice: true,
+        startDescription: true,
+        startStock: true,
+        startDiscountPercentage: true,
+        startBrand: true,
+        startCategory: true,
+        startFiles: true,
+      });
+    }
     setWaiting(false);
   };
 
@@ -210,46 +213,52 @@ function CreateProduct() {
     console.log({ FinalProduct: product });
     setWaiting(true);
 
-    product.category = categories.filter((cat) => {
-      return cat.name === product.category;
-    });
-    product.category = product.category[0]._id;
+    if (typeof product.category === "string") {
+      product.category = categories.filter((cat) => {
+        return cat.name === product.category;
+      });
+      product.category = product.category[0]._id;
+    } else {
+      product.category = product.category._id;
+    }
 
     let token = localStorage.getItem("CMPToken");
-    // let res = await dispatch(creatProductAction(product, token)); // call edit prodcut id
+    let res = await dispatch(editProductdAction(product, editId, token));
 
-    e.target.files.value = "";
+    if (res) {
+      e.target.files.value = "";
 
-    setProduct({
-      title: "",
-      price: "",
-      description: "",
-      stock: "",
-      discountPercentage: "",
-      brand: "",
-      category: "",
-      files: [],
-    });
+      setProduct({
+        title: "",
+        price: "",
+        description: "",
+        stock: "",
+        discountPercentage: "",
+        brand: "",
+        category: "",
+        files: [],
+      });
 
-    setValidInput({
-      title: false,
-      price: false,
-      description: false,
-      stock: false,
-      discountPercentage: false,
-      brand: false,
-      category: false,
-      files: false,
+      setValidInput({
+        title: false,
+        price: false,
+        description: false,
+        stock: false,
+        discountPercentage: false,
+        brand: false,
+        category: false,
+        files: false,
 
-      startTitle: true,
-      startPrice: true,
-      startDescription: true,
-      startStock: true,
-      startDiscountPercentage: true,
-      startBrand: true,
-      startCategory: true,
-      startFiles: true,
-    });
+        startTitle: true,
+        startPrice: true,
+        startDescription: true,
+        startStock: true,
+        startDiscountPercentage: true,
+        startBrand: true,
+        startCategory: true,
+        startFiles: true,
+      });
+    }
     setWaiting(false);
   };
 

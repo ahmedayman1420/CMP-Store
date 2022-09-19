@@ -179,10 +179,90 @@ const refreshToken = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
   }
 };
+
+/*
+//==// Add to cart: is the logic of '/cart/add' api that used to add product to user cart.
+the response of this function in success (Add To Cart Success), in failure (show error message).
+*/
+const addToCart = async (req, res) => {
+  try {
+    let decoded = req.decoded;
+    let email = decoded.email;
+    let product = req.body.product; //{Quantity, Id}
+    let cart = [];
+
+    let oldUser = await users.findOne({ email, isDeleted: false });
+    if (oldUser) {
+      cart = oldUser.cart;
+      let q = product.quantity;
+      let index = -1;
+      if (cart.length) {
+        cart.forEach((pro, i) => {
+          if (pro._id == product.id) {
+            q += pro.quantity;
+            index = i;
+          }
+        });
+        cart[index] = { _id: product.id, quantity: q };
+      } else cart.push({ _id: product.id, quantity: q });
+
+      const data = await users.updateOne(
+        { email, isDeleted: false },
+        { cart },
+        { new: true }
+      );
+
+      oldUser = await users.findOne({ email, isDeleted: false }).populate({
+        path: "cart._id",
+        model: "products",
+      });
+
+      res.status(StatusCodes.CREATED).json({
+        message: "Add To Cart Success",
+        payload: oldUser,
+      });
+    } else {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Email is Not Found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  }
+};
+
+/*
+//==// get cart: is the logic of '/cart/get' api that used to get user cart.
+the response of this function in success (Get Cart Success), in failure (show error message).
+*/
+const getCart = async (req, res) => {
+  try {
+    let decoded = req.decoded;
+    let email = decoded.email;
+
+    let oldUser = await users.findOne({ email, isDeleted: false });
+    if (oldUser) {
+      res.status(StatusCodes.CREATED).json({
+        message: "Get Cart Success",
+        payload: oldUser,
+      });
+    } else {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Email is Not Found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  }
+};
 // ====== --- ====== > Export Module < ====== --- ====== //
 module.exports = {
   signUp,
   signIn,
   googleSignIn,
   refreshToken,
+  addToCart,
+  getCart,
 };
