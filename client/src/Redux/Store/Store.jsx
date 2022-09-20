@@ -10,6 +10,7 @@ const initialState = {
   categories: [],
   searchWord: "",
   products: [],
+  cart: [],
 };
 
 export const store = createStore(

@@ -31,6 +31,7 @@ import {
   deleteProductAction,
   getProductByIdAction,
 } from "../../Redux/Actions/ProductActions";
+import { addToCartAction } from "../../Redux/Actions/UserActions";
 
 // ======= --- ======= <| Component |> ======= --- ======= //
 function ProductDetails() {
@@ -48,6 +49,7 @@ function ProductDetails() {
   let [admin, setAdmin] = useState({ role: "user", isAdmin: false });
   const [show, setShow] = useState(false);
   let [deleteId, setDeleteId] = useState("");
+  let [quantity, setQuantity] = useState(1);
 
   // ======= --- ======= <| Component-Functions |> ======= --- ======= //
 
@@ -102,6 +104,15 @@ function ProductDetails() {
     navigate("/products");
   };
   console.log({ product });
+  console.log({ quantity });
+
+  const handelAddToCart = async (e, id) => {
+    e.preventDefault();
+    setWaiting(true);
+    let token = await localStorage.getItem("CMPToken");
+    await dispatch(addToCartAction({ id, quantity }, token));
+    setWaiting(false);
+  };
 
   // ======= --- ======= <| Component-JSX |> ======= --- ======= //
   return (
@@ -384,7 +395,11 @@ function ProductDetails() {
 
                     <Card.Text className={["p-3"].join(" ")}>
                       <Form.Label>Quantity: </Form.Label>
-                      <Form.Select>
+                      <Form.Select
+                        onChange={(e) => {
+                          setQuantity(Number(e.target.value));
+                        }}
+                      >
                         {Array.from({ length: product.stock }, (_, i) => {
                           return (
                             <option key={i} value={i + 1}>
@@ -393,11 +408,15 @@ function ProductDetails() {
                           );
                         })}
                       </Form.Select>
-                      <Button variant="secondary" className="w-100 my-3">
+                      <Button
+                        variant="secondary"
+                        className="w-100 my-3"
+                        onClick={(e) => {
+                          // Call handle add to cart
+                          handelAddToCart(e, product._id);
+                        }}
+                      >
                         Add to Cart
-                      </Button>
-                      <Button variant="warning" className="w-100">
-                        Buy Now
                       </Button>
                     </Card.Text>
                   </Card.Body>

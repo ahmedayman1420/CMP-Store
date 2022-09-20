@@ -203,7 +203,8 @@ const addToCart = async (req, res) => {
             index = i;
           }
         });
-        cart[index] = { _id: product.id, quantity: q };
+        if (index != -1) cart[index] = { _id: product.id, quantity: q };
+        else cart.push({ _id: product.id, quantity: q });
       } else cart.push({ _id: product.id, quantity: q });
 
       const data = await users.updateOne(
@@ -241,7 +242,10 @@ const getCart = async (req, res) => {
     let decoded = req.decoded;
     let email = decoded.email;
 
-    let oldUser = await users.findOne({ email, isDeleted: false });
+    let oldUser = await users.findOne({ email, isDeleted: false }).populate({
+      path: "cart._id",
+      model: "products",
+    });
     if (oldUser) {
       res.status(StatusCodes.CREATED).json({
         message: "Get Cart Success",

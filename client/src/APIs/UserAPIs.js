@@ -63,3 +63,38 @@ export const refreshTokenAPI = async (token) => {
     return error;
   }
 };
+
+export const addToCartAPI = async (product, token) => {
+  try {
+    const res = await axios.post(
+      `${baseURL}cart/add`,
+      { product },
+      {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+export const getCartAPI = async (token) => {
+  try {
+    const res = await axios.get(
+      `${baseURL}cart/get`,
+      {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};

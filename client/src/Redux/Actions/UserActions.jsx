@@ -1,5 +1,7 @@
 // ======= --- ======= <| APIs |> ======= --- ======= //
 import {
+  addToCartAPI,
+  getCartAPI,
   googleSigninAPI,
   refreshTokenAPI,
   signInAPI,
@@ -7,7 +9,13 @@ import {
 } from "../../APIs/UserAPIs";
 
 // ======= --- ======= <| Actions Strings |> ======= --- ======= //
-import { Error_SIGNIN, ERROR_SIGNUP } from "./ActionStrings";
+import {
+  ADD_TO_CART,
+  ERROR_CART,
+  Error_SIGNIN,
+  ERROR_SIGNUP,
+  SET_CART,
+} from "./ActionStrings";
 
 // ======= --- ======= <| ERROR Action |> ======= --- ======= //
 import { errorResetAction, unexpectedErrorAction } from "./ErrorActions";
@@ -75,6 +83,52 @@ export const refreshTokenAction = (token) => async (dispatch) => {
   } else {
     await localStorage.setItem("CMPToken", res.data.payload.token);
 
+    dispatch(errorResetAction());
+    return true;
+  }
+};
+
+export const addToCartAction = (product, token) => async (dispatch) => {
+  const res = await addToCartAPI(product, token);
+  if (res?.data?.message !== "Add To Cart Success") {
+    let payload = {
+      value: true,
+      message: res.response.data.message,
+      type: "cart",
+    };
+    dispatch(unexpectedErrorAction(ERROR_CART, payload));
+    return false;
+  } else {
+    // Dispatch add to cart action
+    let payload = res.data.payload;
+
+    dispatch({
+      type: ADD_TO_CART,
+      payload,
+    });
+    dispatch(errorResetAction());
+    return true;
+  }
+};
+
+export const getCartAction = (token) => async (dispatch) => {
+  const res = await getCartAPI(token);
+  if (res?.data?.message !== "Get Cart Success") {
+    let payload = {
+      value: true,
+      message: res.response.data.message,
+      type: "cart",
+    };
+    dispatch(unexpectedErrorAction(ERROR_CART, payload));
+    return false;
+  } else {
+    // Dispatch add to cart action
+    let payload = res.data.payload;
+
+    dispatch({
+      type: SET_CART,
+      payload,
+    });
     dispatch(errorResetAction());
     return true;
   }
